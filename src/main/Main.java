@@ -16,9 +16,10 @@ public class Main {
 					
 					CommControl commContrl=new CommControl(serialOperator);
 					
-					ControlPanel controlPanel=new ControlPanel(serialData);
-					UserControl userControl=new UserControl(commContrl,controlPanel);
-					controlPanel.setUserControl(userControl);
+					UserControl userControl=new UserControl(commContrl);
+					ControlPanel controlPanel=new ControlPanel(serialData,userControl);
+					
+					userControl.setControlPanel(controlPanel);
 							
 					
 					ControlFrame frame = new ControlFrame(controlPanel);

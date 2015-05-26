@@ -17,7 +17,8 @@ public class CommControl {
 			System.out.println("hello");
 		} catch (SerialConnectionException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("hello1111");
 		
 		}
 	}

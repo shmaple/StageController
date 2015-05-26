@@ -21,21 +21,15 @@ public class ControlPanel extends JPanel  {
 	private UserControl userControl;
 	private JTextArea msgOut;
 	private JTextArea msgIn;
-	private TestUserControl tuc;
-	public void setUserControl(UserControl userControl) {
-		this.userControl = userControl;
-	tuc=new TestUserControl();
-	}
-
-
 	private SerialData	serialData;
 	private JFrame frame;
 	/**
 	 * Create the panel.
 	 */
-	public ControlPanel(SerialData	sd) {
+	public ControlPanel(SerialData	sd ,UserControl uc) {
 		
 		this.serialData=sd;
+		this.userControl=uc;
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new GridLayout(3, 1, 2, 2));
 		
@@ -51,13 +45,7 @@ public class ControlPanel extends JPanel  {
 		JButton Open = new JButton("\u6253\u5F00");
 		Open.setActionCommand("open");
 		commandPanel.add(Open);
-		Open.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.out.println("hello");
-			}});
+		Open.addActionListener(userControl);
 		
 		
 		
@@ -65,7 +53,7 @@ public class ControlPanel extends JPanel  {
 		Close.setActionCommand("close");
 		commandPanel.add(Close);
 		
-		Close.addActionListener(tuc);
+		Close.addActionListener(userControl);
 		
 		JButton Sent = new JButton("\u53D1\u9001");
 		Sent.setActionCommand("sent");

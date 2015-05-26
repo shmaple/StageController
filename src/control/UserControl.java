@@ -10,22 +10,26 @@ import ui.ControlPanel;
 public class UserControl  implements ActionListener{
 
 	private CommControl commControl;
-	//private ControlPanel controlPanel;
+	private ControlPanel controlPanel;
 	
 	
-	public UserControl(CommControl commControl,ControlPanel cp) {
+	public UserControl(CommControl commControl) {
 			this.commControl = commControl;
-			//this.controlPanel=cp;
 			
+			
+	}
+	public void setControlPanel(ControlPanel cp)
+	{
+		this.controlPanel=cp;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd=e.getActionCommand();
 		if(cmd.equals("open")) commControl.open();
-		if(cmd.equals("close")) System.out.println("close");//commControl.close();
+		if(cmd.equals("close")) commControl.close();
 		if(cmd.equals("sent")) {
-			//controlPanel.generateCommand();
+			controlPanel.generateCommand();
 			commControl.sent();
 		}
 	

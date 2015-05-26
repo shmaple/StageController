@@ -52,7 +52,7 @@ public class SerialParameters {
     control, 8 data bits, 1 stop bit, no parity.
     */
     public SerialParameters () {
-	this("", 
+	this("COM1", 
 	     9600, 
 	     SerialPort.FLOWCONTROL_NONE,
 	     SerialPort.FLOWCONTROL_NONE,
