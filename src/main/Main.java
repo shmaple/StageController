@@ -22,7 +22,7 @@ public class Main {
 					userControl.setControlPanel(controlPanel);
 							
 					
-					ControlFrame frame = new ControlFrame(controlPanel);
+					ControlFrame frame = new ControlFrame(controlPanel,userControl);
 					frame.setVisible(true);
 					frame.setTitle("Stage Controller System");
 				

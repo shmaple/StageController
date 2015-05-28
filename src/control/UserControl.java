@@ -26,14 +26,23 @@ public class UserControl  implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd=e.getActionCommand();
-		if(cmd.equals("open")) commControl.open();
-		if(cmd.equals("close")) commControl.close();
+		if(cmd.equals("save")){System.out.println(cmd);}
+		if(cmd.equals("load")){System.out.println(cmd);}
+		if(cmd.equals("GSC")){System.out.println(cmd);}
+		if(cmd.equals("FINE")){System.out.println(cmd);}
+		if(cmd.equals("config")){System.out.println(cmd);}
+		if(cmd.equals("help")){System.out.println(cmd);}
+		if(cmd.equals("about")){System.out.println(cmd);}
+		if(cmd.equals("exit"))
+			{
+			System.exit(0);
+			}
 		if(cmd.equals("sent")) {
 			controlPanel.generateCommand();
-			commControl.sent();
+			//commControl.sent();
 		}
 	
-		if(cmd.equals("config")) commControl.showCfg();
+		//if(cmd.equals("config")) commControl.showCfg();
 		
 
 		

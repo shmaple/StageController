@@ -11,7 +11,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.JButton;
 
 import control.UserControl;
-import control.TestUserControl;
 import dto.SerialData;
 import dto.SerialParameters;
 
@@ -62,6 +61,10 @@ public class ControlPanel extends JPanel  {
 		//Sent.addActionListener(new ActionListener());
 		
 		JButton Cfg = new JButton("\u914D\u7F6E");
+		Cfg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		Cfg.setActionCommand("config");
 		commandPanel.add(Cfg);
 		
