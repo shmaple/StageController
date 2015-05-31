@@ -1,6 +1,7 @@
 package layers;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class TravelLayer extends Layer {
@@ -20,6 +21,9 @@ public class TravelLayer extends Layer {
 
 	public TravelLayer(int x, int y, int w, int h, String title) {
 		super(x, y, w, h, title, tip);
+		this.gridLayout.setRows(6);
+		this.gridLayout.setColumns(2);
+		//this.setLayout(gridLayout);
 	}
 
 	@Override
@@ -49,12 +53,17 @@ public class TravelLayer extends Layer {
 
 	@Override
 	public void addComponent() {
+		this.add(new JLabel("Selet Axis:"));
 		this.add(axisSelector);
+		this.add(new JLabel("First Axis Direction:"));
 		this.add(firstDirectSelector);
+		this.add(new JLabel("First Axis Pulse:"));
 		this.add(firstAxisPulse);
-		
+		this.add(new JLabel("Second Axis Direction:"));
 		this.add(SecondDirectSelector);
+		this.add(new JLabel("Second Axis Pulse:"));
 		this.add(secondAxisPulse);
+		this.add(new JLabel());
 		this.add(setButton);
 		
 	}

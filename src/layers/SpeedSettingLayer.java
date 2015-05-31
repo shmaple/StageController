@@ -2,6 +2,7 @@ package layers;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class SpeedSettingLayer extends Layer {
@@ -25,6 +26,7 @@ public class SpeedSettingLayer extends Layer {
 	public SpeedSettingLayer(int x, int y, int w, int h, String title
 			) {
 		super(x, y, w, h, title, tip);
+		this.gridLayout.setRows(8);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -46,13 +48,21 @@ public class SpeedSettingLayer extends Layer {
 
 	@Override
 	public void addComponent() {
+		this.add(new JLabel("Select Speed Range:"));
 		this.add(speedRangeSelector);
+		this.add(new JLabel("First Axis Min.Speed:"));
 		this.add(spd1First);
+		this.add(new JLabel("First Axis Max.Speed:"));
 		this.add(spd2First);
+		this.add(new JLabel("First Axis ACC/DEC Time:"));
 		this.add(spd3First);
+		this.add(new JLabel("Second Axis Min.Speed:"));
 		this.add(spd1Second);
+		this.add(new JLabel("Second Axis Max.Speed:"));
 		this.add(spd2Second);
+		this.add(new JLabel("Second Axis Min.Speed:"));
 		this.add(spd3Second);
+		this.add(new JLabel());
 		this.add(setting);
 	}
 

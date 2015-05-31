@@ -2,6 +2,7 @@ package layers;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 public class CommandLayer extends Layer{
 	private static final String tip=
@@ -17,6 +18,7 @@ public class CommandLayer extends Layer{
 
 	public CommandLayer(int x, int y, int w, int h, String title) {
 		super(x, y, w, h, title, tip);
+		this.gridLayout.setRows(3);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -37,6 +39,7 @@ public class CommandLayer extends Layer{
 
 	@Override
 	public void addComponent() {
+		this.add(new JLabel("First Axis Direction:"));
 		this.add(axisSelector);
 		this.add(logicalOriginSet);
 		this.add(hold);

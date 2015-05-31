@@ -2,6 +2,7 @@ package layers;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 public class OrginLayer extends Layer {
 
@@ -9,6 +10,7 @@ public class OrginLayer extends Layer {
 	private JComboBox<Item> firstDirectSelector;
 	private JComboBox<Item> SecondDirectSelector;
 	private JButton setButton;
+	
 	private static final String tip=
 			"<html><body>This command is used to detect the mechanical origin for a stage <br>"
 			+ "and set that position as the origin. Once the mechanical origin <br>"
@@ -19,7 +21,7 @@ public class OrginLayer extends Layer {
 	
 	public OrginLayer(int x, int y, int w, int h, String title) {
 		super(x, y, w, h, title,tip);
-		 
+		
 	}
 
 	public void initComponent()
@@ -39,15 +41,21 @@ public class OrginLayer extends Layer {
 		SecondDirectSelector.addItem(new Item("Negative","-"));
 		
 		setButton =new JButton();
-		setButton.setText("Setting");
+		setButton.setText("Return Origin");
 
 	}
 	@Override
 	public void addComponent() {
-	
+		
+		this.add(new JLabel("Selet Axis:"));		
 		this.add(axisSelector);
+	
+		this.add(new JLabel("First Axis Direction:"));
 		this.add(firstDirectSelector);
+	
+		this.add(new JLabel("Second Axis Direction:"));
 		this.add(SecondDirectSelector);
+		this.add(new JLabel());
 		this.add(setButton);
 		
 		
