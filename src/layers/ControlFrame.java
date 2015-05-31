@@ -12,10 +12,12 @@ public class ControlFrame extends JFrame {
 		Layer travelLayer=new TravelLayer(10,220,200,200,"Travel Layer");
 		Layer jogLayer=new JogLayer(10,220,200,200,"JOG Layer");
 		Layer speedSettingLayer=new SpeedSettingLayer(10,220,200,200,"Speed Setting");
+		Layer commandLayer=new CommandLayer(10,220,200,200,"Command");
 		add(lay);
 		add(travelLayer);
 		add(jogLayer);
 		add(speedSettingLayer);
+		add(commandLayer);
 		this.setLayout(new FlowLayout(0));
 		
 	}
