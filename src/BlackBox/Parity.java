@@ -37,8 +37,7 @@ import java.awt.Choice;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
-import javax.comm.SerialPort;
-import javax.comm.UnsupportedCommOperationException;
+import gnu.io.*;
 
 class Parity extends Choice implements ItemListener
 {

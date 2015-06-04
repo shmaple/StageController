@@ -49,13 +49,7 @@ import java.awt.event.MouseEvent;
 
 import java.util.TooManyListenersException;
 
-import javax.comm.CommPortIdentifier;
-import javax.comm.CommPortOwnershipListener;
-import javax.comm.SerialPort;
-import javax.comm.SerialPortEvent;
-import javax.comm.SerialPortEventListener;
-import javax.comm.PortInUseException;
-import javax.comm.UnsupportedCommOperationException;
+import gnu.io.*;
 
 public class SerialPortDisplay extends Panel implements SerialPortEventListener, MouseListener, CommPortOwnershipListener
 {

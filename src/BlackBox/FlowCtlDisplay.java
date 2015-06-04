@@ -41,8 +41,7 @@ import java.awt.GridLayout;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
-import javax.comm.SerialPort;
-import javax.comm.UnsupportedCommOperationException;
+import gnu.io.*;
 
 public class FlowCtlDisplay extends Panel implements ItemListener
 {

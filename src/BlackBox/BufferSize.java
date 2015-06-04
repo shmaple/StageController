@@ -42,7 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import javax.comm.SerialPort;
+import gnu.io.*;
 
 public class BufferSize extends Panel implements MouseListener, ActionListener
 {

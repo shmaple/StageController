@@ -48,8 +48,7 @@ import java.awt.event.TextListener;
 import java.awt.event.TextEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-
-import javax.comm.SerialPort;
+import gnu.io.*;
 
 public class Transmitter extends Panel implements TextListener, ItemListener, Runnable
 {

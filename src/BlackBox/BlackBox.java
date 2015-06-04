@@ -44,11 +44,7 @@ import java.awt.event.WindowEvent;
 
 import java.util.Enumeration;
 
-import javax.comm.CommPort;
-import javax.comm.CommPortIdentifier;
-import javax.comm.SerialPort;
-import javax.comm.NoSuchPortException;
-import javax.comm.PortInUseException;
+
 import gnu.io.*;
 public class BlackBox extends Frame implements WindowListener
 {

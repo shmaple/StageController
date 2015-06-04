@@ -40,7 +40,7 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 
-import javax.comm.SerialPort;
+import gnu.io.*;
 
 public class CtlSigDisplay extends Panel
 {

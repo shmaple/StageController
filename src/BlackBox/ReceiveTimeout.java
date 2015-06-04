@@ -42,8 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import javax.comm.SerialPort;
-import javax.comm.UnsupportedCommOperationException;
+import gnu.io.*;
 
 public class ReceiveTimeout extends Panel implements MouseListener, ActionListener
 {

@@ -35,7 +35,7 @@ package BlackBox;
 import java.awt.Panel;
 import java.awt.FlowLayout;
 
-import javax.comm.SerialPort;
+import gnu.io.*;
 
 public class ReceiveOptions extends Panel
 {
