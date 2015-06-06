@@ -15,6 +15,7 @@ public class ControlFrame extends JFrame {
 		Layer jogLayer=new JogLayer(10,180,380,100,"JOG Layer");
 		Layer speedSettingLayer=new SpeedSettingLayer(10,280,380,130,"Speed Setting");
 		Layer commandLayer=new CommandLayer(10,410,380,100,"Command");
+		/*
 		CardLayout cardLayout=new CardLayout();
 		this.setLayout(cardLayout);
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -26,12 +27,15 @@ public class ControlFrame extends JFrame {
 	        tabbedPane.addTab("²âÊÔ¶þ", null, speedSettingLayer);
 	        tabbedPane.addTab("²âÊÔ¶þ", null, commandLayer);
 	        add(tabbedPane);
-		//add(lay);
-		//add(travelLayer);
-		//add(jogLayer);
-		//add(speedSettingLayer);
-		//add(commandLayer);
-		//this.setLayout(null);
+	        */
+		add(lay);
+		
+		add(jogLayer);
+		add(speedSettingLayer);
+		add(travelLayer);
+		
+		add(commandLayer);
+		this.setLayout(new FlowLayout(0));
 		
 	}
 

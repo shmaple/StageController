@@ -32,7 +32,6 @@
  * purposes.
  */
 package BlackBox;
-import java.io.*;
 
 import java.awt.Frame;
 import java.awt.FlowLayout;
@@ -44,150 +43,138 @@ import java.awt.event.WindowEvent;
 
 import java.util.Enumeration;
 
-
 import gnu.io.*;
-public class BlackBox extends Frame implements WindowListener
-{
-	static int			portNum = 0,
-					panelNum = 0,
-					rcvDelay = 0;
-	static SerialPortDisplay[]	portDisp;
-	static BlackBox 		win;
-	static boolean			threaded = true,
-					silentReceive = false,
-					modemMode = false,
-					friendly = false;
 
-	public BlackBox()
-	{
+public class BlackBox extends Frame implements WindowListener {
+	
+	/**
+	 * 串口数量
+	 */
+	static int 	portNum = 0;
+	/**
+	 * 面板数量
+	 */
+	static int	panelNum = 0;
+	static int 	rcvDelay = 10;
+	/**
+	 * 串口显示类数组,panel
+	 */
+	static SerialPortDisplay[] portDisp;
+	static BlackBox win;
+	static boolean threaded = true;
+	static boolean silentReceive = false;
+	/**
+	 * 调制解调器模式
+	 */
+	static boolean modemMode = false;
+	static boolean	friendly = false;
+
+	public BlackBox() {
 		super("Serial Port Black Box Tester");
+		//通过将此窗体连接到本机屏幕资源，使其成为可显示的。如果窗体是可显示的，则其所有子级也将成为可显示的。此方法由工具包内部调用，不应直接由程序调用
 		addNotify();
 
 		addWindowListener(this);
 	}
 
-	public void windowIconified(WindowEvent event)
-	{
+	public void windowIconified(WindowEvent event) {
 	}
 
-	public void windowDeiconified(WindowEvent event)
-	{
+	public void windowDeiconified(WindowEvent event) {
 	}
 
-	public void windowOpened(WindowEvent event)
-	{
+	public void windowOpened(WindowEvent event) {
 	}
 
-	public void windowClosed(WindowEvent event)
-	{
+	public void windowClosed(WindowEvent event) {
 	}
 
-	public void windowActivated(WindowEvent event)
-	{
+	public void windowActivated(WindowEvent event) {
 	}
 
-	public void windowDeactivated(WindowEvent event)
-	{
+	public void windowDeactivated(WindowEvent event) {
 	}
 
-	public void windowClosing(WindowEvent event)
-	{
+	public void windowClosing(WindowEvent event) {
 		cleanup();
 		dispose();
 		System.exit(0);
 	}
 
-	public static void main(String[] args)
-	{
-		Enumeration 		ports;
-		CommPortIdentifier	portId;
-		boolean			allPorts = true,
-					lineMonitor = false;
-		int			idx = 0;
+	public static void main(String[] args) {
+		Enumeration ports;
+		CommPortIdentifier portId;
+		boolean allPorts = true, lineMonitor = false;
+		int idx = 0;
 
 		win = new BlackBox();
 		win.setLayout(new FlowLayout());
 		win.setBackground(Color.gray);
 
-		portDisp = new SerialPortDisplay[4];
-
+		portDisp = new SerialPortDisplay[2];
+/*
 		while (args.length > idx)
 		{
-			if (args[idx].equals("-h"))
-			{
+			if (args[idx].equals("-h")) {
 				printUsage();
 			}
 
-			else if (args[idx].equals("-f"))
-			{
+			else if (args[idx].equals("-f")) {
 				friendly = true;
-	
+
 				System.out.println("Friendly mode");
 			}
 
-			else if (args[idx].equals("-n"))
-			{
+			else if (args[idx].equals("-n")) {
 				threaded = false;
-	
+
 				System.out.println("No threads");
 			}
 
-			else if (args[idx].equals("-l"))
-			{
+			else if (args[idx].equals("-l")) {
 				lineMonitor = true;
-	
+
 				System.out.println("Line Monitor mode");
 			}
 
-			else if (args[idx].equals("-m"))
-			{
+			else if (args[idx].equals("-m")) {
 				modemMode = true;
-	
+
 				System.out.println("Modem mode");
 			}
 
-			else if (args[idx].equals("-s"))
-			{
+			else if (args[idx].equals("-s")) {
 				silentReceive = true;
-	
+
 				System.out.println("Silent Reciever");
 			}
 
-			else if (args[idx].equals("-d"))
-			{
+			else if (args[idx].equals("-d")) {
 				idx++;
 				rcvDelay = new Integer(args[idx]).intValue();
-	
-				System.out.println("Receive delay = "
-						  + rcvDelay + " msecs");
+
+				System.out.println("Receive delay = " + rcvDelay + " msecs");
 			}
 
-			else if (args[idx].equals("-p"))
-			{
+			else if (args[idx].equals("-p")) {
 				idx++;
 
-				while (args.length > idx)
-				{
-					/*
-					 *  Get the specific port
-					 */
-		
-					try
-					{
-						portId = 
-						   CommPortIdentifier.getPortIdentifier(args[idx]);
+				while (args.length > idx) {
+					
+					// Get the specific port
+					 
 
-						System.out.println("Opening port "
-							    + portId.getName());
-	
+					try {
+						portId = CommPortIdentifier
+								.getPortIdentifier(args[idx]);
+
+						System.out.println("Opening port " + portId.getName());
+
 						win.addPort(portId);
 					}
-	
-					catch (NoSuchPortException e)
-					{
-						System.out.println("Port "
-								  + args[idx]
-								  + " not found!");
+
+					catch (NoSuchPortException e) {
+						System.out.println("Port " + args[idx] + " not found!");
 					}
 
 					idx++;
@@ -198,120 +185,98 @@ public class BlackBox extends Frame implements WindowListener
 				break;
 			}
 
-			else
-			{
-				System.out.println("Unknown option "
-						  + args[idx]);
+			else {
+				System.out.println("Unknown option " + args[idx]);
 				printUsage();
 			}
 
 			idx++;
 		}
-
-		if (allPorts)
-		{
+*/
+		//获取本机上所有的串口设备,并添加到串口数组portDisp中
+		if (allPorts) {
 			/*
-			 *  Get an enumeration of all of the comm ports 
-			 *  on the machine
+			 * Get an enumeration of all of the comm ports on the machine
 			 */
-	
+
 			ports = CommPortIdentifier.getPortIdentifiers();
-	
-			if (ports == null)
-			{
+
+			if (ports == null) {
 				System.out.println("No comm ports found!");
-	
+
 				return;
 			}
 
-			while (ports.hasMoreElements())
-			{
+			while (ports.hasMoreElements()) {
 				/*
-				 *  Get the specific port
+				 * Get the specific port
 				 */
-	
-				portId = (CommPortIdentifier) 
-							ports.nextElement();
+
+				portId = (CommPortIdentifier) ports.nextElement();
 
 				win.addPort(portId);
 			}
+
 		}
 
-		if (portNum > 0)
-		{
-			if (lineMonitor)
-			{
-				if (portNum >= 2)
-				{
-					portDisp[0].setLineMonitor(portDisp[1], 
-								   true);
+		if (portNum > 0) {
+			if (lineMonitor) {
+				if (portNum >= 2) {
+					portDisp[0].setLineMonitor(portDisp[1], true);
 				}
 
-				else
-				{
+				else {
 					System.out.println("Need 2 ports for line monitor!");
 					System.exit(0);
 				}
 			}
 		}
 
-		else
-		{
+		else {
 			System.out.println("No serial ports found!");
 			System.exit(0);
 		}
-    	}
+	}
 
-	private void addPort(CommPortIdentifier	portId)
-	{
+	/**
+	 * 检测本机的串口并添加到窗口中
+	 * @param portId
+	 */
+	private void addPort(CommPortIdentifier portId) {
 		/*
-		 *  Is this a serial port?
+		 * Is this a serial port?
 		 */
 
-		if (portId.getPortType()
-		 == CommPortIdentifier.PORT_SERIAL)
-		{
-			//  Is the port in use?	
-
-			if (portId.isCurrentlyOwned())
-			{
-				System.out.println("Detected "
-						   + portId.getName()
-						   + " in use by "
-						   + portId.getCurrentOwner());
+		if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+			// Is the port in use?
+			//判断串口是否被占用，但不有用,在打开串口的时候才能探测串口是否被占用
+			//System.out.println(portId.isCurrentlyOwned());
+			if (portId.isCurrentlyOwned()) {
+				System.out.println("Detected " + portId.getName()
+						+ " in use by " + portId.getCurrentOwner());
 			}
 
 			/*
-			 *  Open the port and add it to our GUI
+			 * Open the port and add it to our GUI
 			 */
 
-			try
-			{
-				portDisp[portNum] = new 
-					SerialPortDisplay(portId, 
-							  threaded,
-							  friendly,
-							  silentReceive,
-							  modemMode,
-							  rcvDelay,
-							  win);
+			try {
+				portDisp[portNum] = new SerialPortDisplay(portId, threaded,
+						friendly, silentReceive, modemMode, rcvDelay, win);
 
 				this.portNum++;
 			}
 
-			catch (PortInUseException e)
-			{
-				System.out.println(portId.getName()
-						   + " in use by "
-						   + e.currentOwner);
+			catch (PortInUseException e) {
+				System.out.println(portId.getName() + " in used by "
+						+ e.currentOwner);
 			}
 		}
 	}
 
-	public void addPanel(SerialPortDisplay	panel)
-	{
-		Dimension	dim;
-		Insets		ins;
+	public void addPanel(SerialPortDisplay panel) {
+		Dimension dim;
+		Insets ins;
 
 		win.add(panel);
 
@@ -321,8 +286,7 @@ public class BlackBox extends Frame implements WindowListener
 
 		ins = win.getInsets();
 
-		dim.height = ((this.panelNum + 1) * (dim.height + ins.top
-				                  + ins.bottom)) + 10;
+		dim.height = ((this.panelNum + 1) * (dim.height + ins.top + ins.bottom)) + 10;
 
 		dim.width = dim.width + ins.left + ins.right + 20;
 
@@ -333,9 +297,9 @@ public class BlackBox extends Frame implements WindowListener
 		panelNum++;
 	}
 
-	static void printUsage()
-	{
-		System.out.println("Usage: BlackBox [-h] | [-f] [-l] [-m] [-n] [-s] [-d receive_delay] [-p ports]");
+	static void printUsage() {
+		System.out
+				.println("Usage: BlackBox [-h] | [-f] [-l] [-m] [-n] [-s] [-d receive_delay] [-p ports]");
 
 		System.out.println("Where:");
 
@@ -351,35 +315,30 @@ public class BlackBox extends Frame implements WindowListener
 
 		System.out.println("\t-s	don't display received data");
 
-		System.out.println("\t-d	sleep for receive_delay msecs after each read");
+		System.out
+				.println("\t-d	sleep for receive_delay msecs after each read");
 
 		System.out.println("\t-p	list of ports to open (separated by spaces)");
 
 		System.exit(0);
 	}
 
-	private void cleanup()
-	{
-		SerialPort	p;
+	private void cleanup() {
+		SerialPort p;
 
-		while (portNum > 0)
-		{
+		while (portNum > 0) {
 			portNum--;
 			panelNum--;
 
 			/*
-			 *  Close the port
+			 * Close the port
 			 */
 
 			p = portDisp[portNum].getPort();
 
-			if (p != null)
-			{
-				System.out.println("Closing port "
-						   + portNum 
-						   + " ("
-						   + p.getName()
-						   + ")");
+			if (p != null) {
+				System.out.println("Closing port " + portNum + " ("
+						+ p.getName() + ")");
 
 				portDisp[portNum].closeBBPort();
 			}

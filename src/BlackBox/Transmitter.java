@@ -32,6 +32,7 @@
  * purposes.
  */
 package BlackBox;
+
 import java.lang.Thread;
 
 import java.io.IOException;
@@ -50,28 +51,20 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import gnu.io.*;
 
-public class Transmitter extends Panel implements TextListener, ItemListener, Runnable
-{
-	private Panel			p,
-					p1,
-					p2;
-	private TextArea		text;
-	private Checkbox		auto,
-					sendBreak;
-	private ByteStatistics		counter;
-	private SerialPortDisplay	owner;
-	private	Thread			thr;
-	private Color			onColor,
-					offColor;
+public class Transmitter extends Panel implements TextListener, ItemListener,
+		Runnable {
+	private Panel p, p1, p2;
+	private TextArea text;
+	private Checkbox auto, sendBreak;
+	private ByteStatistics counter;
+	private SerialPortDisplay owner;
+	private Thread thr;
+	private Color onColor, offColor;
 
-	private boolean			first,
-					modemMode;
-	static  String			testString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n";		
+	private boolean first, modemMode;
+	static String testString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n";
 
-	public Transmitter(SerialPortDisplay	owner,
-			   int			rows,
-			   int			cols)
-	{
+	public Transmitter(SerialPortDisplay owner, int rows, int cols) {
 		super();
 
 		this.first = true;
@@ -109,8 +102,7 @@ public class Transmitter extends Panel implements TextListener, ItemListener, Ru
 		this.text.addTextListener(this);
 		this.add("Center", text);
 
-		this.counter = new ByteStatistics("Bytes Sent", 10, 
-						  owner.port, false);
+		this.counter = new ByteStatistics("Bytes Sent", 10, owner.port, false);
 		this.add("South", this.counter);
 
 		this.thr = null;
@@ -119,146 +111,118 @@ public class Transmitter extends Panel implements TextListener, ItemListener, Ru
 		this.offColor = Color.black;
 	}
 
-	public Transmitter(SerialPortDisplay	owner,
-			   int			rows,
-			   int			cols,
-			   boolean		modemMode)
-	{
+	public Transmitter(SerialPortDisplay owner, int rows, int cols,
+			boolean modemMode) {
 		this(owner, rows, cols);
 
 		this.modemMode = modemMode;
 	}
 
-	public void setPort(SerialPort	port)
-	{
+	public void setPort(SerialPort port) {
 		this.counter.setPort(port);
 	}
 
-	public void showValues()
-	{
+	public void showValues() {
 		this.counter.showValues();
 	}
 
-	public void clearValues()
-	{
+	public void clearValues() {
 		this.counter.clearValues();
 	}
 
-	public void setBitsPerCharacter(int	val)
-	{
+	public void setBitsPerCharacter(int val) {
 		this.counter.setBitsPerCharacter(val);
 	}
 
 	/*
-	 *	Handler for transmit text area events
+	 * Handler for transmit text area events
 	 */
 
-	public void textValueChanged(TextEvent	ev)
-	{
-		if (first && (this.text.getCaretPosition() > 0))
-		{
+	public void textValueChanged(TextEvent ev) {
+		if (first && (this.text.getCaretPosition() > 0)) {
 			first = false;
 
-			this.text.replaceRange("", 
-					       0, 
-					       this.text.getCaretPosition()
-						 - 1);
+			this.text.replaceRange("", 0, this.text.getCaretPosition() - 1);
 		}
 
-		if (!first)
-		{
+		if (!first) {
 			this.sendData();
 		}
 
 	}
 
-	public void run()
-	{
+	public void run() {
 		this.sendData();
 	}
 
-	public void sendString(String 	str)
-	{
-		int	count;
+	public void sendString(String str) {
+		int count;
 
 		count = str.length();
 
-		if (count > 0)
-		{
-			try
-			{
+		if (count > 0) {
+			try {
 				owner.out.write(str.getBytes());
-	
+
 				counter.incrementValue((long) count);
-	
+
 				owner.ctlSigs.BE = false;
-	
+
 				owner.ctlSigs.showErrorValues();
 			}
-	
-			catch (IOException ex)
-			{
-				if (owner.open)
-				{
-					System.out.println(owner.port.getName() 
-							   + ": Cannot write to output stream");
-	
+
+			catch (IOException ex) {
+				if (owner.open) {
+					System.out.println(owner.port.getName()
+							+ ": Cannot write to output stream");
+
 					this.auto.setState(false);
 				}
 			}
 		}
 	}
 
-	private void sendData()
-	{
-		String	str;
+	private void sendData() {
+		String str;
 
-		if (this.owner.open && this.auto.getState())
-		{
-			while (this.owner.open && this.auto.getState())
-			{
+		if (this.owner.open && this.auto.getState()) {
+			while (this.owner.open && this.auto.getState()) {
 				sendString(testString);
 			}
 		}
 
-		else
-		{
+		else {
 			str = this.text.getText();
 
 			sendString(str);
 
 			this.text.setText("");
 		}
-	} 
+	}
 
 	/*
-	 *	Handler for checkbox events
+	 * Handler for checkbox events
 	 */
 
-	public void itemStateChanged(ItemEvent	ev)
-	{
-		if (this.auto.getState() && (thr == null) && this.owner.open)
-		{
+	public void itemStateChanged(ItemEvent ev) {
+		if (this.auto.getState() && (thr == null) && this.owner.open) {
 			this.auto.setForeground(this.onColor);
 
 			startTransmit();
 		}
 
-		else
-		{
+		else {
 			stopTransmit();
 		}
 
-		if (this.sendBreak.getState())
-		{
-			if (this.owner.open)
-			{
+		if (this.sendBreak.getState()) {
+			if (this.owner.open) {
 				this.sendBreak.setForeground(this.onColor);
 
 				/*
-				 *  Send a 1000 millisecond break.
+				 * Send a 1000 millisecond break.
 				 */
-	
+
 				owner.port.sendBreak(1000);
 			}
 
@@ -268,9 +232,9 @@ public class Transmitter extends Panel implements TextListener, ItemListener, Ru
 		}
 	}
 
-	private void startTransmit()
-	{
-		if (thr == null);
+	private void startTransmit() {
+		if (thr == null)
+			;
 		{
 			counter.resetRate();
 
@@ -280,8 +244,7 @@ public class Transmitter extends Panel implements TextListener, ItemListener, Ru
 		}
 	}
 
-	public void stopTransmit()
-	{
+	public void stopTransmit() {
 		thr = null;
 
 		this.auto.setState(false);

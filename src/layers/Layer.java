@@ -32,10 +32,10 @@ public abstract class Layer extends JPanel {
 		setBounds(x, y, w, h);
 		this.setBorder(BorderFactory.createTitledBorder(title));
 		this.setToolTipText(tip);
-		//gridLayout.setHgap(5);
-		//gridLayout.setVgap(5);
+		gridLayout.setHgap(5);
+		gridLayout.setVgap(5);
 		
-		//this.setLayout(gridLayout);
+		this.setLayout(gridLayout);
 		//label.setPreferredSize(new JButton("dddd").getPreferredSize());
 		 initComponent();
 		 addComponent();

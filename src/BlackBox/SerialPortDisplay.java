@@ -32,6 +32,7 @@
  * purposes.
  */
 package BlackBox;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
@@ -51,49 +52,82 @@ import java.util.TooManyListenersException;
 
 import gnu.io.*;
 
-public class SerialPortDisplay extends Panel implements SerialPortEventListener, MouseListener, CommPortOwnershipListener
-{
-	protected CommPortIdentifier	portID;
-	protected SerialPort		port = null;
-    	protected InputStream 		in;
-    	protected OutputStream 		out,
-					outSave;
-	protected boolean		lineMonitor,
-					silentReceive,
-					modemMode,
-					open = false;
-	protected int			numDataBits = 1;
-	
-	private int		rcvDelay;
-	private Thread		rcvThread = null;
-	private BlackBox	owner;
-	private boolean		threadRcv,
-				friendly,
-				waiting = false;
+public class SerialPortDisplay extends Panel implements
+		SerialPortEventListener, MouseListener, CommPortOwnershipListener {
+	/**
+	 * 串口管理类
+	 */
+	protected CommPortIdentifier portID;
+	/**
+	 * 串口实例
+	 */
+	protected SerialPort port = null;
+	/**
+	 * 串口输入流
+	 */
+	protected InputStream in;
+	/**
+	 * 串口输出流
+	 */
+	protected OutputStream out;
+	/**
+	 * 串口输出流Out 临时存储
+	 */
+	protected OutputStream outSave;
+	protected boolean lineMonitor, silentReceive;
+	/**
+	 * 调制解调器模式
+	 */
+	protected boolean	modemMode;
+	/**
+	 * 串口是否打开
+	 */
+	protected boolean open = false;
+	protected int numDataBits = 1;
 
-	Panel			display,
-				statePanel,
-				textPanel;
-	Label			portName = null;
-	BaudRate		baudRate;
-	DataBits		dataBits;
-	Parity			parity;
-	StopBits		stopBits;
-	CtlSigDisplay		ctlSigs;
-	FlowCtlDisplay		flowCtl;
-	Receiver		receiver;
-	Transmitter		transmitter;
+	private int rcvDelay;
+	/**
+	 * 接收线程
+	 */
+	private Thread rcvThread = null;
+	/**
+	 * 父窗口引用
+	 */
+	private BlackBox owner;
+	/**
+	 * 是否使用多线程接收数据
+	 */
+	private boolean threadRcv; 
+	private boolean friendly;
+	private boolean waiting = false;
 
-
-	public SerialPortDisplay(CommPortIdentifier	portID,
-				 boolean		threadRcv,
-				 boolean		friendly,
-				 boolean		silentReceive,
-				 boolean		modemMode,
-				 int			rcvDelay,
-				 BlackBox		owner)
-	throws PortInUseException
-	{
+	Panel display, statePanel, textPanel;
+	/**
+	 * 串口名称标签
+	 */
+	Label portName = null;
+	BaudRate baudRate;
+	DataBits dataBits;
+	Parity parity;
+	StopBits stopBits;
+	CtlSigDisplay ctlSigs;
+	FlowCtlDisplay flowCtl;
+	Receiver receiver;
+	Transmitter transmitter;
+	/**
+	 * 串口面板构造函数
+	 * @param portID 串口管理类
+	 * @param threadRcv
+	 * @param friendly
+	 * @param silentReceive
+	 * @param modemMode
+	 * @param rcvDelay
+	 * @param owner 父窗口引用
+	 * @throws PortInUseException
+	 */
+	public SerialPortDisplay(CommPortIdentifier portID, boolean threadRcv,
+			boolean friendly, boolean silentReceive, boolean modemMode,
+			int rcvDelay, BlackBox owner) throws PortInUseException {
 		super();
 
 		this.setLayout(new BorderLayout());
@@ -111,116 +145,108 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 		this.friendly = friendly;
 
 		this.rcvDelay = rcvDelay;
-	
+
 		this.silentReceive = silentReceive;
-	
+
 		this.modemMode = modemMode;
-	
+
+		//打开串口
 		this.openBBPort();
 	}
 
-	private boolean openBBPort() throws PortInUseException
-	{
+	/**
+	 * @return
+	 * @throws PortInUseException
+	 */
+	private boolean openBBPort() throws PortInUseException {
 		/*
-		 *  If we are already open, do a close first.
+		 * If we are already open, do a close first.
 		 */
 
-		if (this.open)
-		{
+		if (this.open) {
 			this.closeBBPort();
 		}
 
 		/*
-		 *  Register an ownership listener so we can 
-		 *  manage the port. 
+		 * Register an ownership listener so we can manage the port.
 		 */
 
 		this.portID.addPortOwnershipListener(this);
 
 		/*
-		 *  Try to open the port
+		 * Try to open the port
 		 */
 
-		try
-		{
-			port = (SerialPort) 
-					portID.open("BlackBox", 2000);
+		try {
+			//打开串口，制定owner为BLACKBOX，超时制定2s
+			port = (SerialPort) portID.open("BlackBox", 2000);
 
-			if (port == null)
-			{
-				System.out.println("Error opening port "
-						  + portID.getName());
-	
+			if (port == null) {
+				System.out.println("Error opening port " + portID.getName());
+
 				return false;
 			}
-	
-			else
-			{
+
+			else {
 				this.open = true;
 				this.waiting = false;
 
-				if (portName != null)
-				{
+				if (portName != null) {
 					portName.setForeground(Color.green);
 				}
 			}
-	
+
 			/*
-			 *  Get the input stream
+			 * Get the input stream
 			 */
-	
-			try
-			{
+
+			try {
+				//获取串口输入流
 				in = this.port.getInputStream();
 			}
-	
-			catch (IOException e)
-			{
+
+			catch (IOException e) {
 				System.out.println("Cannot open input stream");
 			}
-	
+
 			/*
-			 *  Get the output stream
+			 * Get the output stream
 			 */
-	
-			try
-			{
-				if (modemMode)
-				{
+			//获取输出流
+			try {
+				if (modemMode) {
 					out = new ConvertedOutputStream(port.getOutputStream());
 				}
 
-				else
-				{
+				else {
 					out = port.getOutputStream();
 				}
 			}
-	
-			catch (IOException e)
-			{
+
+			catch (IOException e) {
 				System.out.println("Cannot open output stream");
 			}
 
 			/*
-			 *  Create the panel (if needed)
+			 * Create the panel (if needed)
 			 */
-	
+
 			this.createPanel();
 
 			this.showValues();
 
 			/*
-			 *  Setup an event listener for the port
+			 * Setup an event listener for the port
 			 */
 			try {
-			port.addEventListener(this);
+				port.addEventListener(this);
 			} catch (TooManyListenersException tmle) {
-			    tmle.printStackTrace();
+				tmle.printStackTrace();
 			}
 			/*
-			 *  These are the events we want to know about
+			 * These are the events we want to know about
 			 */
-	
+
 			port.notifyOnCTS(true);
 			port.notifyOnDSR(true);
 			port.notifyOnRingIndicator(true);
@@ -233,48 +259,41 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 			port.notifyOnOutputEmpty(true);
 
 			/*
-			 *  Create the receiver thread
+			 * Create the receiver thread
 			 */
 
-			if (this.threadRcv && (rcvThread == null))
-			{
-				rcvThread = new Thread(this.receiver, 
-							"Rcv "
-						        + port.getName());
-	
+			if (this.threadRcv && (rcvThread == null)) {
+				//创建接收线程并命名为PORT.GETNAME.
+				rcvThread = new Thread(this.receiver, "Rcv " + port.getName());
+				//启动接收线程
 				rcvThread.start();
 			}
-	
-			else
-			{
+
+			else {
 				rcvThread = null;
 			}
 		}
 
-		catch (PortInUseException e)
-		{
-			System.out.println("Queueing open for "
-					  + portID.getName()
-					  + ": port in use by "
-				  	  + e.currentOwner);
+		catch (PortInUseException e) {
+			System.out.println("Queueing open for " + portID.getName()
+					+ ": port in use by " + e.currentOwner);
 
-			if (portName != null)
-			{
+			if (portName != null) {
 				portName.setForeground(Color.yellow);
 			}
 
 			this.waiting = true;
 
-//			throw(e);
+			// throw(e);
 		}
 
 		return true;
 	}
-
-	public void closeBBPort()
-	{
-		if (this.open)
-		{
+	/**
+	 * 关闭串口
+	 */
+	public void closeBBPort() {
+		if (this.open) {
 			System.out.println("Closing " + this.port.getName());
 
 			this.portName.setForeground(Color.red);
@@ -282,42 +301,41 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 			this.open = false;
 
 			/*
-			 *  Stop transmitting
+			 * Stop transmitting
 			 */
-	
+
 			this.transmitter.stopTransmit();
 
 			/*
-			 *  Stop receiving
+			 * Stop receiving
 			 */
-	
-			if (this.rcvThread != null)
-			{
+
+			if (this.rcvThread != null) {
+				//线程中断
 				this.rcvThread.interrupt();
 
 				this.rcvThread = null;
 			}
 
 			/*
-			 *  Remove the event listener for the port
+			 * Remove the event listener for the port
 			 */
-	
+
 			this.port.removeEventListener();
-	
+
 			/*
-			 *  Remove the ownership event listener
+			 * Remove the ownership event listener
 			 */
 
 			this.portID.removePortOwnershipListener(this);
 
 			/*
-			 *  Close the port
+			 * Close the port
 			 */
 
 			this.port.close();
 
 			this.port = null;
-
 
 			ctlSigs.setPort(this.port);
 
@@ -336,59 +354,63 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 			this.showValues();
 		}
 	}
-
-	public SerialPort getPort()
-	{
-		return(this.open ? this.port : null);
+	/**
+	 * 获取serial port对象
+	 * @return SerialPort
+	 */
+	public SerialPort getPort() {
+		return (this.open ? this.port : null);
 	}
-
-	private OutputStream getOutputStream()
-	{
-		return(this.out);
+    /**
+     * 获取串口输出流
+     * @return OutputStream
+     */
+	private OutputStream getOutputStream() {
+		return (this.out);
 	}
-
-	private void setOutputStream(OutputStream	newout)
-	{
+	/**
+	 * 设置串口输出流
+	 * @param newout
+	 */
+	private void setOutputStream(OutputStream newout) {
 		this.outSave = getOutputStream();
 
 		this.out = newout;
 	}
-
-	public void setLineMonitor(SerialPortDisplay	other,
-				   boolean		value)
-	{
+	/**
+	 * 设置线路监视
+	 * @param other 另一个串口
+	 * @param value
+	 */
+	public void setLineMonitor(SerialPortDisplay other, boolean value) {
 		/*
-		 *  To make a line monitor, we simply take two ports
-		 *  and interchange their output streams!
+		 * To make a line monitor, we simply take two ports and interchange
+		 * their output streams!
 		 */
 
 		this.lineMonitor = value;
 		other.lineMonitor = value;
 
-		if (this.lineMonitor)
-		{
+		if (this.lineMonitor) {
 			this.setOutputStream(other.getOutputStream());
 
 			other.setOutputStream(this.outSave);
 		}
 
-		else
-		{
+		else {
 			other.setOutputStream(this.getOutputStream());
 
 			this.setOutputStream(this.outSave);
 		}
 	}
 
-	private void createPanel()
-	{
+	private void createPanel() {
 		/*
-		 *  If this labels exists, we hav already been created,
-		 *  so just reset the correct port.
+		 * If this labels exists, we hav already been created, so just reset the
+		 * correct port.
 		 */
 
-		if (portName != null)
-		{
+		if (portName != null) {
 			ctlSigs.setPort(this.port);
 
 			flowCtl.setPort(this.port);
@@ -398,84 +420,75 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 			transmitter.setPort(this.port);
 		}
 
-		else
-		{
+		else {
 			/*
-			 *  Create the User Interface objects
+			 * Create the User Interface objects
 			 */
-	
+
 			display = new Panel();
 			display.setLayout(new FlowLayout());
-	
+
 			portName = new Label(portID.getName());
-	
-			if (this.open)
-			{
+
+			if (this.open) {
 				portName.setForeground(Color.green);
 			}
-	
-			else if (this.waiting)
-			{
+
+			else if (this.waiting) {
 				portName.setForeground(Color.yellow);
 			}
-	
-			else
-			{
+
+			else {
 				portName.setForeground(Color.red);
 			}
-	
+
 			portName.addMouseListener(this);
 			display.add(portName);
-	
+
 			baudRate = new BaudRate(this);
 			display.add(baudRate);
-	
+
 			dataBits = new DataBits(this);
 			display.add(dataBits);
-	
+
 			stopBits = new StopBits(this);
 			display.add(stopBits);
-	
+
 			parity = new Parity(this);
 			display.add(parity);
-	
+
 			this.add("North", display);
-	
-	
+
 			statePanel = new Panel();
 			statePanel.setLayout(new BorderLayout());
-	
+
 			ctlSigs = new CtlSigDisplay(port);
 			statePanel.add("North", ctlSigs);
-	
+
 			flowCtl = new FlowCtlDisplay(port);
 			statePanel.add("South", flowCtl);
-	
+
 			this.add("South", statePanel);
-	
-	
+
 			textPanel = new Panel();
 			textPanel.setLayout(new BorderLayout());
-	
-			receiver = new Receiver(this, 6, 40, 
-						this.rcvDelay, 
-						this.silentReceive);
-	
+
+			receiver = new Receiver(this, 6, 40, this.rcvDelay,
+					this.silentReceive);
+
 			textPanel.add("East", receiver);
-	
-			transmitter = new Transmitter(this, 6, 40,
-						      this.modemMode);
-	
+
+			transmitter = new Transmitter(this, 6, 40, this.modemMode);
+
 			textPanel.add("West", transmitter);
-	
+
 			this.add("Center", textPanel);
-	
+
 			owner.addPanel(this);
 		}
 	}
 
-	protected void showValues()
-	{
+	protected void showValues() {
 		baudRate.showValue();
 		dataBits.showValue();
 		stopBits.showValue();
@@ -492,21 +505,18 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 	}
 
 	/*
-	 *	Handler for all serial port events
+	 * Handler for all serial port events
 	 */
 
-	public void serialEvent(SerialPortEvent	ev)
-	{
-		if (this.port == null)
-		{
+	public void serialEvent(SerialPortEvent ev) {
+		if (this.port == null) {
 			System.out.println(port.getName()
-					 + "got serial event on a closed port");
+					+ "got serial event on a closed port");
 
 			return;
 		}
 
-		switch(ev.getEventType())
-		{
+		switch (ev.getEventType()) {
 		case SerialPortEvent.BI:
 
 			this.ctlSigs.BILabel.setState(ev.getNewValue());
@@ -540,27 +550,21 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 			this.ctlSigs.DA = true;
 			this.ctlSigs.showErrorValues();
 
-			if (rcvThread != null)
-			{
+			if (rcvThread != null) {
 				synchronized (receiver) {
 					receiver.notify();
 				}
 			}
 
-			else if (threadRcv)
-			{
-				System.out.println(port.getName()
-						 + "Receive thread has died!");
+			else if (threadRcv) {
+				System.out.println(port.getName() + "Receive thread has died!");
 
-				rcvThread = new Thread(this.receiver, 
-						       "Rcv "
-						       + port.getName());
+				rcvThread = new Thread(this.receiver, "Rcv " + port.getName());
 
 				rcvThread.start();
 			}
 
-			else
-			{
+			else {
 				this.receiver.readData();
 			}
 
@@ -575,104 +579,84 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 		}
 	}
 
-
 	/*
-	 *	Handler to open/close port
+	 * Handler to open/close port
 	 */
 
-	public void mouseClicked(MouseEvent e)
-	{
+	public void mouseClicked(MouseEvent e) {
 	}
 
-	public void mouseEntered(MouseEvent e)
-	{
+	public void mouseEntered(MouseEvent e) {
 	}
 
-	public void mouseExited(MouseEvent e)
-	{
+	public void mouseExited(MouseEvent e) {
 	}
 
-	public void mousePressed(MouseEvent e)
-	{
-//		this.showValues();
+	public void mousePressed(MouseEvent e) {
+		// this.showValues();
 
-		if (this.open)
-		{
+		if (this.open) {
 			this.closeBBPort();
 		}
 
-		else
-		{
-			try
-			{
+		else {
+			try {
 				openBBPort();
 			}
 
-			catch (PortInUseException ex)
-			{
-				System.out.println(portID.getName()
-						   + " is in use by "
-						   + ex.currentOwner);
-	
+			catch (PortInUseException ex) {
+				System.out.println(portID.getName() + " is in use by "
+						+ ex.currentOwner);
+
 			}
 		}
 	}
 
-	public void mouseReleased(MouseEvent e)
-	{
+	public void mouseReleased(MouseEvent e) {
 	}
 
 	/*
-	 *	Handler for port ownership events.
+	 * Handler for port ownership events.
 	 */
 
-	public void ownershipChange(int type)
-	{
-		switch (type)
-		{
+	public void ownershipChange(int type) {
+		switch (type) {
 		case CommPortOwnershipListener.PORT_UNOWNED:
 
-			System.out.println(portID.getName()
-					   + ": PORT_UNOWNED");
+			System.out.println(portID.getName() + ": PORT_UNOWNED");
 
-			if (this.waiting)
-			{
+			if (this.waiting) {
 				/*
-				 *  Try to open the port
+				 * Try to open the port
 				 */
-	
-				try
-				{
+
+				try {
 					openBBPort();
 				}
-	
-				catch (PortInUseException e)
-				{
+
+				catch (PortInUseException e) {
 					System.out.println(portID.getName()
-							   + " s/b free but is in use by "
-							   + e.currentOwner);
+							+ " s/b free but is in use by " + e.currentOwner);
 				}
 			}
 
 			break;
-			
+
 		case CommPortOwnershipListener.PORT_OWNED:
 
 			System.out.println(portID.getName() + ": PORT_OWNED");
 
 			break;
-			
+
 		case CommPortOwnershipListener.PORT_OWNERSHIP_REQUESTED:
 
-			System.out.println(portID.getName()
-					   + ": PORT_OWNERSHIP_REQUESTED");
+			System.out.println(portID.getName() + ": PORT_OWNERSHIP_REQUESTED");
 
-			if (this.friendly && this.open)
-			{
+			if (this.friendly && this.open) {
 				/*
-				 *  Give up the port
+				 * Give up the port
 				 */
-	
+
 				this.closeBBPort();
 			}
 
@@ -681,4 +665,3 @@ public class SerialPortDisplay extends Panel implements SerialPortEventListener,
 		}
 	}
 }
-
