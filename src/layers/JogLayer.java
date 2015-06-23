@@ -1,5 +1,7 @@
 package layers;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -40,6 +42,9 @@ public class JogLayer extends Layer {
 		SecondDirectSelector.addItem(new Item("Postive","+"));
 		SecondDirectSelector.addItem(new Item("Negative","-"));
 		
+		start.addActionListener(this);
+		stop.addActionListener(this);
+		
 	}
 	@Override
 	public void addComponent() {
@@ -52,5 +57,12 @@ public class JogLayer extends Layer {
 		this.add(start);
 		this.add(stop);
 		
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		this.userControl.sendCMD(tip);
 	}
 }

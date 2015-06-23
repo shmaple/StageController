@@ -32,10 +32,10 @@ public class CommControl {
 		return serialOperator;
 	}
 
-	public void sent() {
+	public void sent(String command) {
 		// TODO Auto-generated method stub
 		
-		this.serialOperator.commSend();
+		this.serialOperator.commSend(command);
 	}
 
 	public void showCfg() {

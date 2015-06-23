@@ -6,7 +6,7 @@ public class SerialData {
 	private String command;
 	public SerialData() {
 		this.isOpen=false;
-		this.respose="";
+		this.respose="null";
 		this.command="";
 	}
 	public boolean isOpen() {

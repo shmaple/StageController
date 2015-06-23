@@ -1,5 +1,7 @@
 package layers;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -42,6 +44,7 @@ public class SpeedSettingLayer extends Layer {
 		spd1Second=new JTextField(10);
 		spd2Second=new JTextField(10);
 		spd3Second=new JTextField(10);
+		setting.addActionListener(this);
 
 
 	}
@@ -64,6 +67,13 @@ public class SpeedSettingLayer extends Layer {
 		this.add(spd3Second);
 		this.add(new JLabel());
 		this.add(setting);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		this.userControl.sendCMD(tip);
+		System.out.print("hell");
 	}
 
 }

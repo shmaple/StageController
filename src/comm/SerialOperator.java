@@ -266,10 +266,12 @@ public class SerialOperator implements SerialPortEventListener
 	    		e1.printStackTrace();
 	    		}
 	       String str=new String(msg);
-	       if(str.endsWith(parameters.getDelimiter())){
+	       System.out.println(str);
+	       //if(str.endsWith(parameters.getDelimiter())){
 	    	this.response=str;
 	    	serialData.setRespose(str);
-	       }
+	    	
+	     //  }
 		break;
 
 	    // If break event append BREAK RECEIVED message.
@@ -283,9 +285,9 @@ public class SerialOperator implements SerialPortEventListener
      * ·¢ËÍ´®¿ÚÃüÁî£¬²¢Ìí¼Ó½áÊø·û
      * @param cmd ÃüÁî×Ö·û´®
      */
-    public void commSend()
+    public void commSend(String command)
     {
-    	String cmd=serialData.getCommand()+parameters.getDelimiter();
+    	String cmd=command+parameters.getDelimiter();
     	byte[] sendCMD=cmd.getBytes();
     	try {
 			os.write(sendCMD);

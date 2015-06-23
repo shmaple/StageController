@@ -55,13 +55,25 @@ public class BlackBox extends Frame implements WindowListener {
 	 * 面板数量
 	 */
 	static int	panelNum = 0;
+	/**
+	 * 接收延时时间
+	 */
 	static int 	rcvDelay = 10;
 	/**
 	 * 串口显示类数组,panel
 	 */
 	static SerialPortDisplay[] portDisp;
+	/**
+	 * 自身引用
+	 */
 	static BlackBox win;
+	/**
+	 * 是否允许多线程
+	 */
 	static boolean threaded = true;
+	/**
+	 * 安静模式，不显示接收的数据
+	 */
 	static boolean silentReceive = false;
 	/**
 	 * 调制解调器模式
@@ -110,89 +122,9 @@ public class BlackBox extends Frame implements WindowListener {
 		win = new BlackBox();
 		win.setLayout(new FlowLayout());
 		win.setBackground(Color.gray);
+		//初始化串口显示类
+		portDisp = new SerialPortDisplay[4];
 
-		portDisp = new SerialPortDisplay[2];
-/*
-		while (args.length > idx)
-		{
-			if (args[idx].equals("-h")) {
-				printUsage();
-			}
-
-			else if (args[idx].equals("-f")) {
-				friendly = true;
-
-				System.out.println("Friendly mode");
-			}
-
-			else if (args[idx].equals("-n")) {
-				threaded = false;
-
-				System.out.println("No threads");
-			}
-
-			else if (args[idx].equals("-l")) {
-				lineMonitor = true;
-
-				System.out.println("Line Monitor mode");
-			}
-
-			else if (args[idx].equals("-m")) {
-				modemMode = true;
-
-				System.out.println("Modem mode");
-			}
-
-			else if (args[idx].equals("-s")) {
-				silentReceive = true;
-
-				System.out.println("Silent Reciever");
-			}
-
-			else if (args[idx].equals("-d")) {
-				idx++;
-				rcvDelay = new Integer(args[idx]).intValue();
-
-				System.out.println("Receive delay = " + rcvDelay + " msecs");
-			}
-
-			else if (args[idx].equals("-p")) {
-				idx++;
-
-				while (args.length > idx) {
-					
-					// Get the specific port
-					 
-
-					try {
-						portId = CommPortIdentifier
-								.getPortIdentifier(args[idx]);
-
-						System.out.println("Opening port " + portId.getName());
-
-						win.addPort(portId);
-					}
-
-					catch (NoSuchPortException e) {
-						System.out.println("Port " + args[idx] + " not found!");
-					}
-
-					idx++;
-				}
-
-				allPorts = false;
-
-				break;
-			}
-
-			else {
-				System.out.println("Unknown option " + args[idx]);
-				printUsage();
-			}
-
-			idx++;
-		}
-*/
 		//获取本机上所有的串口设备,并添加到串口数组portDisp中
 		if (allPorts) {
 			/*
@@ -323,13 +255,17 @@ public class BlackBox extends Frame implements WindowListener {
 		System.exit(0);
 	}
 
+	/**
+	 * 依次关闭串口
+	 */
 	private void cleanup() {
 		SerialPort p;
 
 		while (portNum > 0) {
+			System.out.println("portNum="+portNum);
 			portNum--;
 			panelNum--;
-
+			System.out.println("portNum="+portNum);
 			/*
 			 * Close the port
 			 */

@@ -1,5 +1,7 @@
 package layers;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,6 +37,11 @@ public class CommandLayer extends Layer{
 		logicalOriginSet.setToolTipText("Set electronic (logical) origin to the current position of selected axis");
 		hold=new JButton("Hold/Free Motro");
 		hold.setToolTipText("Hold or free selected axis");
+		stop.addActionListener(this);
+		emergencyStop.addActionListener(this);
+		logicalOriginSet.addActionListener(this);
+		hold.addActionListener(this);
+		
 	}
 
 	@Override
@@ -45,6 +52,13 @@ public class CommandLayer extends Layer{
 		this.add(hold);
 		this.add(stop);
 		this.add(emergencyStop);
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		this.userControl.sendCMD(tip);
 	}
 
 }

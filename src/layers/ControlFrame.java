@@ -1,50 +1,44 @@
 package layers;
 
-import java.awt.CardLayout;
-import java.awt.FlowLayout;
-
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
+
+import comm.SerialConnectionException;
+import comm.SerialOperator;
+import control.CommControl;
+import control.UserControl;
+import dto.SerialData;
+import dto.SerialParameters;
 
 public class ControlFrame extends JFrame {
-	public ControlFrame()
-	{
-		
-		Layer lay=new OrginLayer(10,10,380,70,"Mechanlcal Origin");
-		Layer travelLayer=new TravelLayer(10,80,380,100,"Travel Layer");
-		Layer jogLayer=new JogLayer(10,180,380,100,"JOG Layer");
-		Layer speedSettingLayer=new SpeedSettingLayer(10,280,380,130,"Speed Setting");
-		Layer commandLayer=new CommandLayer(10,410,380,100,"Command");
-		/*
-		CardLayout cardLayout=new CardLayout();
-		this.setLayout(cardLayout);
-		JTabbedPane tabbedPane = new JTabbedPane();
-	      // tabbedPane.setLayout(null);
-	        tabbedPane.addTab("测试一", null, lay);
-	       
-	        tabbedPane.addTab("测试二", null, travelLayer);
-	        tabbedPane.addTab("测试三", null, jogLayer);
-	        tabbedPane.addTab("测试二", null, speedSettingLayer);
-	        tabbedPane.addTab("测试二", null, commandLayer);
-	        add(tabbedPane);
-	        */
-		add(lay);
-		
-		add(jogLayer);
-		add(speedSettingLayer);
-		add(travelLayer);
-		
-		add(commandLayer);
-		this.setLayout(new FlowLayout(0));
-		
-	}
+		public ControlFrame(ControlPanel controlPanel)
+		{
+			this.setContentPane(controlPanel);
+			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+			this.setSize(800, 800);
+			this.setVisible(true);
+		}
+	 
 
-	public static void main(String[] args) {
-		JFrame frame=new ControlFrame();
-		frame.setSize(800, 800);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+	public static void main(String[] args) throws SerialConnectionException {
+		//定义数据保存对象
+		SerialData serialData=new SerialData();
+		//定义串口配置对象
+		SerialParameters serialParameters=new SerialParameters();
+		//定义串口操作对象，并装载串口配置对象及数据保存对象
+		SerialOperator serialOperator=new SerialOperator(serialParameters,serialData);
 		
-		frame.setVisible(true);
+		//定义串口控制对象，并装载串口操作对象
+		CommControl commControl=new CommControl(serialOperator);
+		//定义用户控制对象，并装载串口控制对象
+		UserControl userControl=new UserControl(commControl);
+		//定义控制面板，并装载用户控制对象
+		ControlPanel controlPanel=new ControlPanel(userControl,serialData);
+		controlPanel.setSerialData(serialData);
+		//定义窗口，并加载控制面板
+		JFrame frame=new ControlFrame(controlPanel);
+		//打开串口
+		serialOperator.commOpen();
+
 	}
 
 }

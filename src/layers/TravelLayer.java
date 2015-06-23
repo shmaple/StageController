@@ -1,4 +1,6 @@
 package layers;
+import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -47,6 +49,7 @@ public class TravelLayer extends Layer {
 		this.secondAxisPulse=new JTextField();
 		this.secondAxisPulse.setPreferredSize(SecondDirectSelector.getPreferredSize());
 		setButton =new JButton("GO");
+		setButton.addActionListener(this);
 		//setButton.setPreferredSize(SecondDirectSelector.getPreferredSize());
 		
 	}
@@ -66,6 +69,12 @@ public class TravelLayer extends Layer {
 		this.add(new JLabel());
 		this.add(setButton);
 		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		this.userControl.sendCMD(tip);
 	}
 
 }

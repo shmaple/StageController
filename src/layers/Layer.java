@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -12,7 +13,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-public abstract class Layer extends JPanel {
+import comm.SerialOperator;
+
+import control.CommControl;
+import control.UserControl;
+
+public abstract class Layer extends JPanel implements ActionListener  {
 	private int x;
 	private int y;
 	private int w;
@@ -20,7 +26,8 @@ public abstract class Layer extends JPanel {
 	private String title;
 	private static final int PADDING=32;
 	protected GridLayout gridLayout=new GridLayout(4,2); 
-	
+	protected  UserControl userControl=null;
+
 	
 	public Layer(int x,int y,int w,int h,String title,String tip)
 	{
@@ -40,6 +47,10 @@ public abstract class Layer extends JPanel {
 		 initComponent();
 		 addComponent();
 		
+	}
+	public void setUserControl(UserControl userControl)
+	{
+		this.userControl=userControl;
 	}
 	public abstract void initComponent() ;
 	public abstract void addComponent();

@@ -1,5 +1,7 @@
 package layers;
 
+import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -42,6 +44,7 @@ public class OrginLayer extends Layer {
 		
 		setButton =new JButton();
 		setButton.setText("Return Origin");
+		setButton.addActionListener(this);
 
 	}
 	@Override
@@ -59,6 +62,12 @@ public class OrginLayer extends Layer {
 		this.add(setButton);
 		
 		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		this.userControl.sendCMD(tip);
 	}
 
 
