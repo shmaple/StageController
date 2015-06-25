@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 import comm.SerialConnectionException;
 import comm.SerialOperator;
-import control.CommControl;
 import control.UserControl;
 import dto.SerialData;
 import dto.SerialParameters;
@@ -27,12 +26,11 @@ public class ControlFrame extends JFrame {
 		//定义串口操作对象，并装载串口配置对象及数据保存对象
 		SerialOperator serialOperator=new SerialOperator(serialParameters,serialData);
 		
-		//定义串口控制对象，并装载串口操作对象
-		CommControl commControl=new CommControl(serialOperator);
-		//定义用户控制对象，并装载串口控制对象
-		UserControl userControl=new UserControl(commControl);
+		//定义用户控制对象，并装载串口操作对象
+		UserControl userControl=new UserControl(serialOperator);
 		//定义控制面板，并装载用户控制对象
 		ControlPanel controlPanel=new ControlPanel(userControl,serialData);
+		serialOperator.addObserver(controlPanel);
 		controlPanel.setSerialData(serialData);
 		//定义窗口，并加载控制面板
 		JFrame frame=new ControlFrame(controlPanel);

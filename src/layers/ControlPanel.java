@@ -2,6 +2,8 @@ package layers;
 
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -9,9 +11,11 @@ import javax.swing.JTextArea;
 import control.UserControl;
 import dto.SerialData;
 
-public class ControlPanel extends JPanel {
+public class ControlPanel extends JPanel implements Observer {
 	private UserControl userControl;
 	private SerialData serialData;
+	private ControlPanel cp=null;
+	private JTextArea textArea=null;
 	public ControlPanel(UserControl userControl,SerialData serialData)
 	{
 		this.userControl=userControl;
@@ -21,7 +25,7 @@ public class ControlPanel extends JPanel {
 		Layer jogLayer=new JogLayer(10,180,380,100,"JOG Layer");
 		Layer speedSettingLayer=new SpeedSettingLayer(10,280,380,130,"Speed Setting");
 		Layer commandLayer=new CommandLayer(10,410,380,100,"Command");
-		
+		cp=this;
 		 orginLayer.setUserControl(userControl);
 		 travelLayer.setUserControl(userControl);
 		 jogLayer.setUserControl(userControl);
@@ -33,7 +37,7 @@ public class ControlPanel extends JPanel {
 		add(speedSettingLayer);
 		add(travelLayer);
 		add(commandLayer);
-		JTextArea textArea=new JTextArea(10,100);
+		 textArea=new JTextArea(10,100);
 		add(textArea);
 		textArea.setText(this.serialData.getRespose());
 		this.setLayout(new FlowLayout(0));
@@ -51,6 +55,10 @@ public class ControlPanel extends JPanel {
 	{
 		this.serialData=serialData;
 	}
-
+	@Override
+	public void update(Observable o, Object arg) {
+		this.textArea.append(arg.toString());
+		
+	}
 
 }

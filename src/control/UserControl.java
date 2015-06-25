@@ -1,15 +1,12 @@
 package control;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
+import comm.SerialOperator;
 
 import ui.ControlPanel;
 
 public class UserControl{
 
-	private CommControl commControl;
+	private SerialOperator serialOperator;
 	private ControlPanel controlPanel;
 	
 	public UserControl()
@@ -17,8 +14,8 @@ public class UserControl{
 		super();
 	}
 	
-	public UserControl(CommControl commControl) {
-			this.commControl = commControl;
+	public UserControl(SerialOperator serialOperator) {
+			this.serialOperator = serialOperator;
 			
 			
 	}
@@ -28,9 +25,9 @@ public class UserControl{
 	}
 
 	
-
+ 
 	public void sendCMD(String Cmd)
 	{
-		this.commControl.sent(Cmd);
+		this.serialOperator.commSend(Cmd);
 	}
 }

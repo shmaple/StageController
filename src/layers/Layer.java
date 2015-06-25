@@ -1,21 +1,10 @@
 package layers;
 
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-
-import comm.SerialOperator;
-
-import control.CommControl;
 import control.UserControl;
 
 public abstract class Layer extends JPanel implements ActionListener  {

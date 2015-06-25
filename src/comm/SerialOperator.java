@@ -1,57 +1,30 @@
 package comm;
-/* @(#)SerialConnection.java	1.6 98/07/17 SMI
- *
- * Copyright (c) 1998 Sun Microsystems, Inc. All Rights Reserved.
- *
- * Sun grants you ("Licensee") a non-exclusive, royalty free, license
- * to use, modify and redistribute this software in source and binary
- * code form, provided that i) this copyright notice and license appear
- * on all copies of the software; and ii) Licensee does not utilize the
- * software in a manner which is disparaging to Sun.
- *
- * This software is provided "AS IS," without a warranty of any kind.
- * ALL EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES,
- * INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN AND
- * ITS LICENSORS SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY
- * LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE
- * SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS
- * BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR DIRECT,
- * INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES,
- * HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING
- * OUT OF THE USE OF OR INABILITY TO USE SOFTWARE, EVEN IF SUN HAS BEEN
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- *
- * This software is not designed or intended for use in on-line control
- * of aircraft, air traffic, aircraft navigation or aircraft
- * communications; or in the design, construction, operation or
- * maintenance of any nuclear facility. Licensee represents and
- * warrants that it will not use or redistribute the Software for such
- * purposes.
- */
-
 import gnu.io.*;
 
 import java.io.*;
+import java.util.Observable;
 import java.util.TooManyListenersException;
 
 import dto.SerialData;
 import dto.SerialParameters;
 
 /**
-*串口操作类，含串口常用操作方法
+*串口操作类，含串口常用操作方法,需要传入串口配置对象SerialParameters及
+*串口数据保存对象SerialData进行初始化。继承Observable类实现观察者模式
+*到串口接收到数据时通知UI进行刷新。
 */
-public class SerialOperator implements SerialPortEventListener 
+public class SerialOperator extends Observable implements SerialPortEventListener 
  {
-   // private SerialDemo parent;
-    /**
-     * 串口设备返回的响应信息
-     */
-    private String response;
     /**
      * 串口参数配置类
      */
     private SerialParameters parameters;
+    
+    /**
+     * 串口数据保存类
+     */  
+	private SerialData serialData;
+	
     /**
      * 串口输出流
      */    
@@ -72,17 +45,10 @@ public class SerialOperator implements SerialPortEventListener
      * 串口打开关闭状态 
      */  
     private boolean open;
-    /**
-     * 待发送命令
-     */  
-	private String Command;
-	
-	private SerialData serialData;
+    
 
 
-    public void setCommand(String command) {
-		Command = command;
-	}
+
 
 	/**
     *构造函数，创建一个串口操作类，并初始化相关参数
@@ -90,9 +56,8 @@ public class SerialOperator implements SerialPortEventListener
     */
     public SerialOperator(SerialParameters parameters,SerialData sd) 
     {
-		//this.parent = parent;
 		this.parameters = parameters;
-		open = false;
+		this.open = false;
 		this.serialData=sd;
    }
 
@@ -113,10 +78,10 @@ public class SerialOperator implements SerialPortEventListener
 		    throw new SerialConnectionException(e.getMessage());
 		}
 	
-		//获取串口对象，并尝试打开
+		//获取串口对象，并尝试打开,并指定StageController为OWNER
 		try 
 		{
-		    sPort = (SerialPort)portId.open("SerialDemo", 30000);
+		    sPort = (SerialPort)portId.open("StageController", 30000);
 		} 
 		catch (PortInUseException e) 
 		{
@@ -128,6 +93,7 @@ public class SerialOperator implements SerialPortEventListener
 		    setConnectionParameters();
 		} catch (SerialConnectionException e) {	
 		    sPort.close();
+		    serialData.setOpen(false);
 		    throw e;
 		}
 	
@@ -137,6 +103,7 @@ public class SerialOperator implements SerialPortEventListener
 		    is = sPort.getInputStream();
 		} catch (IOException e) {
 		    sPort.close();
+		    serialData.setOpen(false);
 		    throw new SerialConnectionException("Error opening i/o streams");
 		}
 	
@@ -151,6 +118,7 @@ public class SerialOperator implements SerialPortEventListener
 		    sPort.addEventListener(this);
 		} catch (TooManyListenersException e) {
 		    sPort.close();
+		    serialData.setOpen(false);
 		    throw new SerialConnectionException("too many listeners added");
 		}
 	
@@ -268,15 +236,13 @@ public class SerialOperator implements SerialPortEventListener
 	       String str=new String(msg);
 	       System.out.println(str);
 	       //if(str.endsWith(parameters.getDelimiter())){
-	    	this.response=str;
 	    	serialData.setRespose(str);
+	    	this.setChanged();
+	    	this.notifyObservers(str);
+
 	    	
 	     //  }
-		break;
 
-	    // If break event append BREAK RECEIVED message.
-	    case SerialPortEvent.BI:
-		response="\n--- BREAK RECEIVED ---\n";
 	}
 
     }   
@@ -287,6 +253,8 @@ public class SerialOperator implements SerialPortEventListener
      */
     public void commSend(String command)
     {
+    	if(open)
+    	{
     	String cmd=command+parameters.getDelimiter();
     	byte[] sendCMD=cmd.getBytes();
     	try {
@@ -295,13 +263,8 @@ public class SerialOperator implements SerialPortEventListener
 			// TODO Auto-generated catch block
 			System.err.println("OutputStream write error: " + e);
 		}
+    	}
     }
-    /**
-     * 获取串口响应信息
-     * @return String
-     */
-	public String getResponse() {
-		return response;
-	}
+
 }
    
