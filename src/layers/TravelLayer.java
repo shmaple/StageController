@@ -1,25 +1,25 @@
 package layers;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class TravelLayer extends Layer {
+public class TravelLayer extends Layer implements ItemListener {
 	
 	private static final String tip=
-			"<html><body style=\"width:200px;text-align:justify;text-justify:inter-ideograph\">This command is to specify the axis of travel, direction, "
+			"This command is to specify the axis of travel, direction, "
 			+ "and the travel (number ofpulses). This command must always be followed "
 			+ "by a drive (G) command. Travel is bymeans of acceleration/deceleration "
-			+ "driving.</html></body>";
-	private JComboBox<Item> axisSelector;
-	private JComboBox<Item> firstDirectSelector;
-	private JComboBox<Item> SecondDirectSelector;
+			+ "driving.";
+	private AxisSelector axisSelector;
+	private DirectSelector firstDirectSelector;
+	private DirectSelector SecondDirectSelector;
 	private JTextField firstAxisPulse;
 	private JTextField secondAxisPulse;
 	private JButton setButton;
-
 
 	public TravelLayer(int x, int y, int w, int h, String title) {
 		super(x, y, w, h, title, tip);
@@ -30,28 +30,20 @@ public class TravelLayer extends Layer {
 
 	@Override
 	public void initComponent() {
+		String commandTip="This command is to specify the axis of travel, direction, "
+				+ "and the travel (number ofpulses). This command must always be followed "
+				+ "by a drive (G) command. Travel is by means of acceleration/deceleration "
+				+ "driving.";
+		axisSelector=new AxisSelector();
+		axisSelector.addItemListener(this);
+		firstDirectSelector=new DirectSelector();
+		SecondDirectSelector=new DirectSelector();
 		
-		axisSelector=new JComboBox<Item>();
-		firstDirectSelector=new JComboBox<Item>();
-		SecondDirectSelector=new JComboBox<Item>();
-		
-		axisSelector.addItem(new Item("First Axis","1"));
-		axisSelector.addItem(new Item("Second Axis","2"));
-		axisSelector.addItem(new Item("Both Axis","W"));
-		firstDirectSelector.addItem(new Item("Postive","+"));
-		firstDirectSelector.addItem(new Item("Negative","-"));
-		
-		SecondDirectSelector.addItem(new Item("Postive","+"));
-		SecondDirectSelector.addItem(new Item("Negative","-"));
 		this.firstAxisPulse=new JTextField();
-		
-		this.firstAxisPulse.setPreferredSize(SecondDirectSelector.getPreferredSize());
 		this.secondAxisPulse=new JTextField();
-		this.secondAxisPulse.setPreferredSize(SecondDirectSelector.getPreferredSize());
 		setButton =new JButton("GO");
+		setButton.setToolTipText(formatTip(commandTip));
 		setButton.addActionListener(this);
-		//setButton.setPreferredSize(SecondDirectSelector.getPreferredSize());
-		
 	}
 
 	@Override
@@ -77,4 +69,36 @@ public class TravelLayer extends Layer {
 		this.userControl.sendCMD(tip);
 	}
 
+	@Override
+	/**
+	 * ComboBox回调函数，依据选择的轴禁用相应的方向选择器
+	 */
+	public void itemStateChanged(ItemEvent e) {
+		if(e.getStateChange()==ItemEvent.SELECTED)
+		{
+			Item  chosedItem=(Item)e.getItem();
+			String chosedValue=chosedItem.getValue();
+			if(chosedValue.equals("1"))
+			{
+				this.SecondDirectSelector.setEnabled(false);
+				this.secondAxisPulse.setEditable(false);
+				this.firstDirectSelector.setEnabled(true);
+				this.firstAxisPulse.setEditable(true);
+			}
+			if(chosedValue.equals("2"))
+			{
+				this.firstDirectSelector.setEnabled(false);
+				this.firstAxisPulse.setEditable(false);
+				this.SecondDirectSelector.setEnabled(true);
+				this.secondAxisPulse.setEditable(true);
+			}
+			if(chosedValue.equals("W"))
+			{
+				this.firstDirectSelector.setEnabled(true);
+				this.firstAxisPulse.setEditable(true);
+				this.SecondDirectSelector.setEnabled(true);
+				this.secondAxisPulse.setEditable(true);
+			}
+		}
+	}
 }

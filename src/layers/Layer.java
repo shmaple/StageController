@@ -27,7 +27,7 @@ public abstract class Layer extends JPanel implements ActionListener  {
 		this.title=title;
 		setBounds(x, y, w, h);
 		this.setBorder(BorderFactory.createTitledBorder(title));
-		this.setToolTipText(tip);
+		//this.setToolTipText(tip);
 		gridLayout.setHgap(5);
 		gridLayout.setVgap(5);
 		
@@ -40,6 +40,12 @@ public abstract class Layer extends JPanel implements ActionListener  {
 	public void setUserControl(UserControl userControl)
 	{
 		this.userControl=userControl;
+	}
+	public String formatTip(String tip)
+	{
+		String begin="<html><body style=\"width:200px;text-align:justify\">";
+		String end="</body></html>";
+		return begin+tip+end;
 	}
 	public abstract void initComponent() ;
 	public abstract void addComponent();

@@ -1,16 +1,18 @@
 package layers;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
-public class OrginLayer extends Layer {
+public class OrginLayer extends Layer implements ItemListener {
 
-	private JComboBox<Item> axisSelector;
-	private JComboBox<Item> firstDirectSelector;
-	private JComboBox<Item> SecondDirectSelector;
+	private AxisSelector axisSelector;
+	private DirectSelector firstDirectSelector;
+	private DirectSelector SecondDirectSelector;
 	private JButton setButton;
 	
 	private static final String tip=
@@ -28,28 +30,24 @@ public class OrginLayer extends Layer {
 
 	public void initComponent()
 	{
-		
-		axisSelector=new JComboBox<Item>();
-		
-		firstDirectSelector=new JComboBox<Item>();
-		SecondDirectSelector=new JComboBox<Item>();
-		
-		axisSelector.addItem(new Item("First Axis","1"));
-		axisSelector.addItem(new Item("Second Axis","2"));
-		axisSelector.addItem(new Item("Both Axis","W"));
-		firstDirectSelector.addItem(new Item("Postive","+"));
-		firstDirectSelector.addItem(new Item("Negative","-"));
-		SecondDirectSelector.addItem(new Item("Postive","+"));
-		SecondDirectSelector.addItem(new Item("Negative","-"));
-		
-		setButton =new JButton();
-		setButton.setText("Return Origin");
+		String commandTip="This command is used to detect the mechanical origin for a stage"
+				+ "and set that position as the origin. Once the mechanical origin "
+				+ "has been detected, the value displayed will be 0. Each axis moves "
+				+ "at the following constant conditions: Minimum speed (S): 500PPS, "
+				+ "Maximum speed (F): 5000PPS, Acceleration/Deceleration time (R): "
+				+ "200mS. Axes to home are depending on the DIP Switch settings";
+		//定义轴选择器及方向选择器
+		axisSelector=new AxisSelector();
+		firstDirectSelector=new DirectSelector();
+		SecondDirectSelector=new DirectSelector();
+		axisSelector.addItemListener(this);
+		//定义命令按钮
+		setButton =new JButton("Return Origin");
+		setButton.setToolTipText(formatTip(commandTip));
 		setButton.addActionListener(this);
-
 	}
 	@Override
 	public void addComponent() {
-		
 		this.add(new JLabel("Selet Axis:"));		
 		this.add(axisSelector);
 	
@@ -60,15 +58,38 @@ public class OrginLayer extends Layer {
 		this.add(SecondDirectSelector);
 		this.add(new JLabel());
 		this.add(setButton);
-		
-		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		this.userControl.sendCMD(tip);
+
 	}
 
-
+	@Override
+	/**
+	 * ComboBox回调函数，依据选择的轴禁用相应的方向选择器
+	 */
+	public void itemStateChanged(ItemEvent e) {
+		if(e.getStateChange()==ItemEvent.SELECTED)
+		{
+			Item  chosedItem=(Item)e.getItem();
+			String chosedValue=chosedItem.getValue();
+			if(chosedValue.equals("1"))
+			{
+				this.SecondDirectSelector.setEnabled(false);
+				this.firstDirectSelector.setEnabled(true);
+			}
+			if(chosedValue.equals("2"))
+			{
+				this.firstDirectSelector.setEnabled(false);
+				this.SecondDirectSelector.setEnabled(true);
+			}
+			if(chosedValue.equals("W"))
+			{
+				this.firstDirectSelector.setEnabled(true);
+				this.SecondDirectSelector.setEnabled(true);
+			}
+		}
+	}
 }

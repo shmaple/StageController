@@ -23,7 +23,7 @@ public class SpeedSettingLayer extends Layer {
 	private JTextField spd1Second;
 	private JTextField spd2Second;
 	private JTextField spd3Second;
-	private JButton setting;
+	private JButton setButton;
 
 	public SpeedSettingLayer(int x, int y, int w, int h, String title
 			) {
@@ -34,19 +34,23 @@ public class SpeedSettingLayer extends Layer {
 
 	@Override
 	public void initComponent() {
+		String commandTip=
+						 "The minimum speed (S), maximum speed (F), and acceleration/deceleration time (R) "
+						+ "are set according to the initialize settings when the power is turned on. This "
+						+ "commandallows you to change these initial settings. The initialize setting is "
+						+ "(S): 500PPS, (F):5000PPS, (R): 200mS.";
 		speedRangeSelector=new JComboBox<Item>();
-		setting=new JButton("Setting");
-		speedRangeSelector.addItem(new Item("Low Speed","1"));
 		speedRangeSelector.addItem(new Item("High Speed","2"));
-		spd1First=new JTextField(10);
-		spd2First=new JTextField(10);
-		spd3First=new JTextField(10);
-		spd1Second=new JTextField(10);
-		spd2Second=new JTextField(10);
-		spd3Second=new JTextField(10);
-		setting.addActionListener(this);
-
-
+		speedRangeSelector.addItem(new Item("Low Speed","1"));
+		spd1First=new JTextField("500",10);
+		spd2First=new JTextField("5000",10);
+		spd3First=new JTextField("200",10);
+		spd1Second=new JTextField("500",10);
+		spd2Second=new JTextField("5000",10);
+		spd3Second=new JTextField("200",10);
+		setButton=new JButton("Setting");
+		setButton.setToolTipText(formatTip(commandTip));
+		setButton.addActionListener(this);
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class SpeedSettingLayer extends Layer {
 		this.add(new JLabel("2se Axis ACC/DEC Timel:"));
 		this.add(spd3Second);
 		this.add(new JLabel());
-		this.add(setting);
+		this.add(setButton);
 	}
 
 	@Override
