@@ -1,10 +1,15 @@
 package layers;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
 import control.UserControl;
 
 public abstract class Layer extends JPanel implements ActionListener  {
@@ -14,11 +19,13 @@ public abstract class Layer extends JPanel implements ActionListener  {
 	private int h;
 	private String title;
 	private static final int PADDING=32;
-	protected GridLayout gridLayout=new GridLayout(4,2); 
+	protected GridBagLayout gridBagLayout= new GridBagLayout();
+	protected GridBagConstraints gbc = new GridBagConstraints();
 	protected  UserControl userControl=null;
 
+
 	
-	public Layer(int x,int y,int w,int h,String title,String tip)
+	public Layer(int x,int y,int w,int h,String title)
 	{
 		this.x=x;
 		this.y=y;
@@ -26,13 +33,18 @@ public abstract class Layer extends JPanel implements ActionListener  {
 		this.h=h;
 		this.title=title;
 		setBounds(x, y, w, h);
+		this.setPreferredSize(new Dimension(w,h));
+	
 		this.setBorder(BorderFactory.createTitledBorder(title));
-		//this.setToolTipText(tip);
-		gridLayout.setHgap(5);
-		gridLayout.setVgap(5);
-		
-		this.setLayout(gridLayout);
-		//label.setPreferredSize(new JButton("dddd").getPreferredSize());
+		//gridBagLayout.
+		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbc.fill=GridBagConstraints.HORIZONTAL;
+		gbc.insets=new Insets(5,5,5,5);
+	
+		this.setLayout(gridBagLayout);
 		 initComponent();
 		 addComponent();
 		

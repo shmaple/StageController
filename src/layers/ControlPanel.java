@@ -1,5 +1,6 @@
 package layers;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.util.Observable;
@@ -20,28 +21,22 @@ public class ControlPanel extends JPanel implements Observer {
 	{
 		this.userControl=userControl;
 		this.serialData=serialData;
-		Layer orginLayer=new OrginLayer(10,10,380,70,"Mechanlcal Origin");
-		Layer travelLayer=new TravelLayer(10,80,380,100,"Travel Layer");
-		Layer jogLayer=new JogLayer(10,180,380,100,"JOG Layer");
-		Layer speedSettingLayer=new SpeedSettingLayer(10,280,380,130,"Speed Setting");
-		Layer commandLayer=new CommandLayer(10,410,380,100,"Command");
-		cp=this;
-		 orginLayer.setUserControl(userControl);
-		 travelLayer.setUserControl(userControl);
-		 jogLayer.setUserControl(userControl);
-		 speedSettingLayer.setUserControl(userControl);
-		 commandLayer.setUserControl(userControl);
+		Layer originJogLayer=new OrginJogLayer(10,10,260,292,"Origin and Jog");//250
+		Layer travelLayer=new TravelLayer(10,80,250,292,"Travel");//238
+		Layer speedSettingLayer=new SpeedSettingLayer(10,280,280,292,"Speed Setting");
 		
-		add(orginLayer);
-		add(jogLayer);
+		cp=this;
+		originJogLayer.setUserControl(userControl);
+		travelLayer.setUserControl(userControl);
+		speedSettingLayer.setUserControl(userControl);
 		add(speedSettingLayer);
+		add(originJogLayer);
+		
 		add(travelLayer);
-		add(commandLayer);
-		 textArea=new JTextArea(10,100);
+		textArea=new JTextArea(10,100);
 		add(textArea);
 		textArea.setText(this.serialData.getRespose());
 		this.setLayout(new FlowLayout(0));
-		
 	}
 	public void setUserControl(UserControl uc)
 	{

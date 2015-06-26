@@ -1,4 +1,6 @@
 package layers;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -8,12 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class TravelLayer extends Layer implements ItemListener {
-	
-	private static final String tip=
-			"This command is to specify the axis of travel, direction, "
-			+ "and the travel (number ofpulses). This command must always be followed "
-			+ "by a drive (G) command. Travel is bymeans of acceleration/deceleration "
-			+ "driving.";
 	private AxisSelector axisSelector;
 	private DirectSelector firstDirectSelector;
 	private DirectSelector SecondDirectSelector;
@@ -22,10 +18,8 @@ public class TravelLayer extends Layer implements ItemListener {
 	private JButton setButton;
 
 	public TravelLayer(int x, int y, int w, int h, String title) {
-		super(x, y, w, h, title, tip);
-		this.gridLayout.setRows(6);
-		this.gridLayout.setColumns(2);
-		//this.setLayout(gridLayout);
+		super(x, y, w, h, title);
+
 	}
 
 	@Override
@@ -48,25 +42,43 @@ public class TravelLayer extends Layer implements ItemListener {
 
 	@Override
 	public void addComponent() {
-		this.add(new JLabel("Selet Axis:"));
-		this.add(axisSelector);
-		this.add(new JLabel("First Axis Direction:"));
-		this.add(firstDirectSelector);
-		this.add(new JLabel("First Axis Pulse:"));
-		this.add(firstAxisPulse);
-		this.add(new JLabel("Second Axis Direction:"));
-		this.add(SecondDirectSelector);
-		this.add(new JLabel("Second Axis Pulse:"));
-		this.add(secondAxisPulse);
-		this.add(new JLabel());
-		this.add(setButton);
+		gbc.insets=new Insets(8,5,8,5);
+		gbc.gridwidth=2;
+		gbc.gridx=0;
+		gbc.gridy=0;
+		this.add(new JLabel("Selet Axis:",JLabel.RIGHT),gbc);
+		gbc.gridy=1;
+		this.add(new JLabel("First Axis Direction:",JLabel.RIGHT),gbc);
+		gbc.gridy=2;		
+		this.add(new JLabel("First Axis Pulse:",JLabel.RIGHT),gbc);
+		gbc.gridy=3;
+		this.add(new JLabel("Second Axis Direction:",JLabel.RIGHT),gbc);
+		gbc.gridy=4;
+		this.add(new JLabel("Second Axis Pulse:",JLabel.RIGHT),gbc);
+		gbc.gridy=5;
+		this.add(new JLabel(),gbc);
+		gbc.gridwidth=1;
+		gbc.gridx=2;
+		gbc.gridy=0;
+		this.add(axisSelector,gbc);
+		gbc.gridy=1;	
+		this.add(firstDirectSelector,gbc);
+		gbc.gridy=2;
+		this.add(firstAxisPulse,gbc);
+		gbc.gridy=3;
+		
+		this.add(SecondDirectSelector,gbc);
+		gbc.gridy=4;
+		this.add(secondAxisPulse,gbc);
+		gbc.gridy=5;
+		this.add(setButton,gbc);
 		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		this.userControl.sendCMD(tip);
+		//this.userControl.sendCMD(tip);
 	}
 
 	@Override

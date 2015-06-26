@@ -13,7 +13,7 @@ public class ControlFrame extends JFrame {
 		{
 			this.setContentPane(controlPanel);
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-			this.setSize(800, 800);
+			this.setSize(840, 350);
 			this.setVisible(true);
 		}
 	 
@@ -36,6 +36,7 @@ public class ControlFrame extends JFrame {
 		JFrame frame=new ControlFrame(controlPanel);
 		//´ò¿ª´®¿Ú
 		serialOperator.commOpen();
+		
 
 	}
 

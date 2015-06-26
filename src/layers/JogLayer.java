@@ -12,16 +12,9 @@ public class JogLayer extends Layer {
 	private JComboBox<Item> SecondDirectSelector;
 	private JButton start;
 	private JButton stop;
-		private static final String tip=
-			"<html><body style=\"width:200px;text-align:justify;text-justify:inter-ideograph\">"
-			+ "This command drives stages continuously (at a constant speed) at the starting "
-			+ "speed(S). This command must always be followed by a drive (G) command. The stage "
-			+ "will stop by an L command.</html></body>";
-		
 	public JogLayer(int x, int y, int w, int h, String title) {
-		super(x, y, w, h, title, tip);
-		//this.gridLayout.setRows(4);
-		//this.gridLayout.setColumns(2);
+		super(x, y, w, h, title);
+
 		
 	}
 
@@ -50,9 +43,9 @@ public class JogLayer extends Layer {
 	public void addComponent() {
 		this.add(new JLabel("Selet Axis:"));
 		this.add(axisSelector);
-		this.add(new JLabel("First Axis Direction:"));
+		this.add(new JLabel("First Axis Direction:",JLabel.RIGHT));
 		this.add(firstDirectSelector);
-		this.add(new JLabel("Second Axis Direction:"));
+		this.add(new JLabel("Second Axis Direction:",JLabel.RIGHT));
 		this.add(SecondDirectSelector);
 		this.add(start);
 		this.add(stop);
@@ -63,6 +56,6 @@ public class JogLayer extends Layer {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		this.userControl.sendCMD(tip);
+		//this.userControl.sendCMD(tip);
 	}
 }
