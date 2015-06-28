@@ -21,16 +21,16 @@ public class FineControlPanel extends JPanel implements Observer {
 	{
 		this.userControl=userControl;
 		this.serialData=serialData;
-		Layer originJogLayer=new FineOrginJogLayer(10,10,260,292,"Fine Origin and Jog");//250
+		Layer fineOriginJogLayer=new FineOrginJogLayer(10,10,260,292,"Fine Origin and Jog");//250
 		Layer fineTravelLayer=new FineTravelLayer(10,80,250,292,"FineTravel");//238
-		Layer speedSettingLayer=new SpeedSettingLayer(10,280,280,292,"Speed Setting");
+		Layer fineSpeedSettingLayer=new FineSpeedSettingLayer(10,280,280,292,"Fine Speed Setting");
 		
 		cp=this;
-		originJogLayer.setUserControl(userControl);
+		fineOriginJogLayer.setUserControl(userControl);
 		fineTravelLayer.setUserControl(userControl);
-		speedSettingLayer.setUserControl(userControl);
-		add(speedSettingLayer);
-		add(originJogLayer);
+		fineSpeedSettingLayer.setUserControl(userControl);
+		add(fineSpeedSettingLayer);
+		add(fineOriginJogLayer);
 		
 		add(fineTravelLayer);
 		textArea=new JTextArea(10,100);

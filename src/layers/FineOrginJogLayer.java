@@ -44,7 +44,7 @@ public class FineOrginJogLayer extends Layer implements ItemListener, ChangeList
 		thirdDirectSelector=new DirectSelector();
 		axisSelector.addItemListener(this);
 		//∂®“Â√¸¡Ó∞¥≈•
-		mechanicalButton =new JButton("Return mechanical Origin");
+		mechanicalButton =new JButton("Mechanical Origin");
 		mechanicalButton.setToolTipText(formatTip(mechanicalButtonTip));
 		mechanicalButton.addActionListener(this);
 		jogButton=new JToggleButton("JOG Start");
@@ -55,9 +55,9 @@ public class FineOrginJogLayer extends Layer implements ItemListener, ChangeList
 		String emergencyTip="Stop the stage immediately and return to the mechanical origin ";
 		String logicalButtonTip="It is a command to return the stage to the logical origin point."
 				+ "(logical) origin to the current position of each axis.";
-		String clearButtonTip="This command is used to excite the motor or to turn "
-				+ "excitation off, making it possibleto move (rotate) stages "
-				+ "manually.";
+		String clearButtonTip="It is a command to clear the coordinate value. "
+				+ "The coordinate value is set to 0 step at open loop control, and 0nm "
+				+ "at closed loop control.";
 			
 		
 		stopButton=new JButton("Stop");
@@ -66,12 +66,12 @@ public class FineOrginJogLayer extends Layer implements ItemListener, ChangeList
 		emergencyStop=new JButton("Emergency Stop");
 		emergencyStop.setToolTipText(formatTip(emergencyTip));
 		
-		logicalButton=new JButton("Return logical origin");
+		logicalButton=new JButton("Logical origin");
 		logicalButton.setToolTipText(formatTip(logicalButtonTip));
 		
-		clearButton=new JButton("Clear coordinate");
+		clearButton=new JButton("Clear");
 		clearButton.setToolTipText(formatTip(clearButtonTip));
-		clearButton.addChangeListener(this);
+		clearButton.addActionListener(this);
 		
 		stopButton.addActionListener(this);
 		emergencyStop.addActionListener(this);
@@ -96,7 +96,6 @@ public class FineOrginJogLayer extends Layer implements ItemListener, ChangeList
 		this.add(mechanicalButton,gbc);
 		gbc.gridy=5;
 		this.add(logicalButton,gbc);
-		//gbc.gridwidth=3;
 		gbc.gridy=6;
 		this.add(emergencyStop,gbc);
 		
@@ -113,7 +112,7 @@ public class FineOrginJogLayer extends Layer implements ItemListener, ChangeList
 		gbc.gridy=4;
 		this.add(jogButton,gbc);
 		gbc.gridy=5;
-		this.add(clearButton);
+		this.add(clearButton,gbc);
 		gbc.gridy=6;
 		this.add(stopButton,gbc);
 		
