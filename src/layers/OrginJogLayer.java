@@ -42,7 +42,7 @@ public class OrginJogLayer extends Layer implements ItemListener, ChangeListener
 				+ "speed(S). This command must always be followed by a drive (G) command. The stage "
 				+ "will stop by an L command.";
 		//定义轴选择器及方向选择器
-		axisSelector=new AxisSelector();
+		axisSelector=new AxisSelector(2);
 		firstDirectSelector=new DirectSelector();
 		SecondDirectSelector=new DirectSelector();
 		axisSelector.addItemListener(this);

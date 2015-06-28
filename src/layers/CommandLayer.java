@@ -34,7 +34,7 @@ public class CommandLayer extends Layer implements ChangeListener{
 		String holdTip="This command is used to excite the motor or to turn "
 				+ "excitation off, making it possibleto move (rotate) stages "
 				+ "manually.";
-		axisSelector=new AxisSelector();	
+		axisSelector=new AxisSelector(2);	
 		
 		stop=new JButton("Stop");
 		stop.setToolTipText(formatTip(stopTip));

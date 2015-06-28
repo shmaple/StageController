@@ -28,7 +28,7 @@ public class TravelLayer extends Layer implements ItemListener {
 				+ "and the travel (number ofpulses). This command must always be followed "
 				+ "by a drive (G) command. Travel is by means of acceleration/deceleration "
 				+ "driving.";
-		axisSelector=new AxisSelector();
+		axisSelector=new AxisSelector(2);
 		axisSelector.addItemListener(this);
 		firstDirectSelector=new DirectSelector();
 		SecondDirectSelector=new DirectSelector();
