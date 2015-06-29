@@ -9,6 +9,9 @@ import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Enumeration;
+
+import javax.swing.JFrame;
+
 import dto.Delimiter;
 import dto.SerialParameters;
 
@@ -194,5 +197,14 @@ state.
 public void itemStateChanged(ItemEvent e) {
     	setParameters();
     }
+public static void main(String[] args)
+{
+	JFrame frame=new JFrame();
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	PortConfigPanel pcp=new PortConfigPanel(new SerialParameters());
+	frame.getContentPane().add(pcp);
+	frame.setSize(400, 300);
+	frame.setVisible(true);
+}
 
 }

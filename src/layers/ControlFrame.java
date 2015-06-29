@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
 
 import comm.SerialConnectionException;
 import comm.SerialOperator;
@@ -16,10 +17,14 @@ public class ControlFrame extends JFrame {
 		{
 			this.setLayout(new FlowLayout(0));
 			//this.setContentPane(controlPanel);
-			this.getContentPane().add(controlPanel);
-			this.getContentPane().add(fineControlPanel);
+			//this.getContentPane().add(controlPanel);
+			//this.getContentPane().add(fineControlPanel);
+			JTabbedPane jtp=new JTabbedPane();
+			jtp.add("GSC-02", controlPanel);
+			jtp.addTab("Fine-503", fineControlPanel);
+			this.add(jtp);
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-			this.setSize(840, 800);
+			this.setSize(840, 400);
 			this.setVisible(true);
 		}
 	 

@@ -33,7 +33,7 @@ public class FineControlPanel extends JPanel implements Observer {
 		add(fineOriginJogLayer);
 		
 		add(fineTravelLayer);
-		textArea=new JTextArea(10,100);
+		textArea=new JTextArea("Respose");
 		add(textArea);
 		textArea.setText(this.serialData.getRespose());
 		this.setLayout(new FlowLayout(0));

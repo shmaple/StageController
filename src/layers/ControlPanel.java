@@ -33,7 +33,7 @@ public class ControlPanel extends JPanel implements Observer {
 		add(originJogLayer);
 		
 		add(travelLayer);
-		textArea=new JTextArea(10,100);
+		textArea=new JTextArea("Respose");
 		add(textArea);
 		textArea.setText(this.serialData.getRespose());
 		this.setLayout(new FlowLayout(0));
