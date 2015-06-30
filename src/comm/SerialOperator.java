@@ -158,8 +158,7 @@ public class SerialOperator extends Observable implements SerialPortEventListene
 
 	// 设置流控制模式
 	try {
-	    sPort.setFlowControlMode(parameters.getFlowControlIn() 
-			           | parameters.getFlowControlOut());
+	    sPort.setFlowControlMode(parameters.getFlowControl());
 	} catch (UnsupportedCommOperationException e) {
 	    throw new SerialConnectionException("Unsupported flow control");
 	}

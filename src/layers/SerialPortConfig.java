@@ -33,9 +33,11 @@ public class SerialPortConfig extends JPanel implements ActionListener
 	private JButton autoButton;
 	private JButton setButton;
 	private JButton saveButton;
-	public SerialPortConfig()
+	public SerialPortConfig(SerialParameters serialParameters)
 	{
+		
 		initComponent();
+		this.serialParameters=serialParameters;
 		addComponent();
 	}
 	
@@ -51,7 +53,7 @@ public class SerialPortConfig extends JPanel implements ActionListener
 		parity.setSelectedIndex(0);
 		flowControl=new JComboBox<String>(new String[]{"None","RTS/CTS","Xon/Xoff"});
 		flowControl.setSelectedIndex(0);
-		delimit=new JComboBox<String>(new String[]{"CR","LF","CR+LF","EOI"});
+		delimit=new JComboBox<String>(new String[]{"CR","LF","CR+LF"});
 		delimit.setSelectedIndex(2);
 		stopBit=new JComboBox<String>(new String[]{"1","1.5","2"});
 		stopBit.setSelectedIndex(2);
@@ -77,8 +79,8 @@ public class SerialPortConfig extends JPanel implements ActionListener
 		this.fixComponent(new JLabel("DataBit:",JLabel.RIGHT), gbc, 0, 1, 1, 1);
 		this.fixComponent(new JLabel("Parity:",JLabel.RIGHT), gbc, 2, 1, 1, 1);
 		this.fixComponent(new JLabel("stopBit:",JLabel.RIGHT), gbc, 0, 2, 1, 1);
-		this.fixComponent(new JLabel("Delimit:",JLabel.RIGHT), gbc, 2, 2, 1, 1);
-		this.fixComponent(new JLabel("Flow:",JLabel.RIGHT), gbc, 0, 3, 1, 1);
+		this.fixComponent(new JLabel("Flow:",JLabel.RIGHT), gbc, 2, 2, 1, 1);
+		this.fixComponent(new JLabel("Delimit:",JLabel.RIGHT), gbc, 0, 3, 1, 1);
 		this.fixComponent(portName, gbc, 1, 0, 1, 1);
 		this.fixComponent(boudRate, gbc, 3, 0, 1, 1);
 		this.fixComponent(dataBit, gbc, 1, 1, 1, 1);
@@ -119,7 +121,8 @@ public class SerialPortConfig extends JPanel implements ActionListener
 		JFrame frame=new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(300, 400);
-		SerialPortConfig spc=new SerialPortConfig();
+		SerialParameters sp=new SerialParameters();
+		SerialPortConfig spc=new SerialPortConfig(sp);
 		frame.add(spc);
 		frame.pack();
 		frame.setVisible(true);
@@ -130,15 +133,12 @@ public class SerialPortConfig extends JPanel implements ActionListener
 		JButton cmdButton=(JButton) e.getSource();
 		if(cmdButton==setButton)
 		{
-			System.out.print(portName.getSelectedItem().toString());
-			System.out.print(boudRate.getSelectedItem().toString());
 			this.serialParameters.setPortName(portName.getSelectedItem().toString());
-			
-			this.serialParameters.setBaudRate(Integer.parseInt(boudRate.getSelectedItem().toString()));
-			this.serialParameters.setDatabits(Integer.parseInt(dataBit.getSelectedItem().toString()));
-			this.serialParameters.setStopbits(Integer.parseInt(stopBit.getSelectedItem().toString()));
+			this.serialParameters.setBaudRate(boudRate.getSelectedItem().toString());
+			this.serialParameters.setDatabits(dataBit.getSelectedItem().toString());
+			this.serialParameters.setStopbits(stopBit.getSelectedItem().toString());
 			this.serialParameters.setDelimiter(delimit.getSelectedItem().toString());
-			this.serialParameters.setFlowControlIn(flowControl.getSelectedItem().toString());
+			this.serialParameters.setFlowControl(flowControl.getSelectedItem().toString());
 			this.serialParameters.setParity(parity.getSelectedItem().toString());
 		}
 		

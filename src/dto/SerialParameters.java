@@ -39,8 +39,7 @@ public class SerialParameters {
 
     private String portName;
     private int baudRate;
-    private int flowControlIn;
-    private int flowControlOut;
+    private int flowControl;
     private int databits;
     private int stopbits;
     private int parity;
@@ -52,14 +51,12 @@ public class SerialParameters {
     control, 8 data bits, 1 stop bit, no parity.
     */
     public SerialParameters () {
-	this("COM5", 
+	this("COM1", 
 	     9600, 
-	     SerialPort.FLOWCONTROL_NONE,
 	     SerialPort.FLOWCONTROL_NONE,
 	     SerialPort.DATABITS_8,
 	     SerialPort.STOPBITS_1,
 	     SerialPort.PARITY_NONE );
-			   
     }		
 
     /**
@@ -75,19 +72,18 @@ public class SerialParameters {
     */
     public SerialParameters(String portName, 
 			    int baudRate,
-			    int flowControlIn,
-			    int flowControlOut,
+			    int flowControl,
 			    int databits,
 			    int stopbits,
 			    int parity) {
 
     	this.portName = portName;
     	this.baudRate = baudRate;
-    	this.flowControlIn = flowControlIn;
-    	this.flowControlOut = flowControlOut;
+    	this.flowControl = flowControl;
     	this.databits = databits;
     	this.stopbits = stopbits;
     	this.parity = parity;
+    	this.delimiter=Delimiter.SCRLF;
     }
     /**
     Paramaterized constructer.
@@ -103,20 +99,12 @@ public class SerialParameters {
     */
     public SerialParameters(String portName, 
 			    int baudRate,
-			    int flowControlIn,
-			    int flowControlOut,
+			    int flowControl,
 			    int databits,
 			    int stopbits,
 			    int parity,
 			    String delimiter) {
-
-    	this.portName = portName;
-    	this.baudRate = baudRate;
-    	this.flowControlIn = flowControlIn;
-    	this.flowControlOut = flowControlOut;
-    	this.databits = databits;
-    	this.stopbits = stopbits;
-    	this.parity = parity;
+    	this(portName,baudRate,flowControl,databits,stopbits,parity);
     	this.delimiter=delimiter;
     }
     public String getDelimiter() {
@@ -124,132 +112,105 @@ public class SerialParameters {
 	}
 
 	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
-	}
+		if(delimiter=="CR")
+		{
+			this.delimiter =Delimiter.SCR;
+			return;
+		}
+		if(delimiter=="LF")
+		{
+			this.delimiter =Delimiter.SLF;
+			return;
+		}
+			this.delimiter =Delimiter.SCRLF;
+		}
 
 	/**
-    Sets port name.
-    @param portName New port name.
+    *设置串口号
+    @param portName 串口编号.
     */
     public void setPortName(String portName) {
 	this.portName = portName;
     }
 
     /**
-    Gets port name.
-    @return Current port name.
+    *获取串口编号
+    @return 当前串口编号.
     */
     public String getPortName() {
 	return portName;
     }
 
     /**
-    Sets baud rate.
-    @param baudRate New baud rate.
+    *设置波特率
+    @param baudRate 波特率.
     */
     public void setBaudRate(int baudRate) {
 	this.baudRate = baudRate;
     }
 
     /**
-    Sets baud rate.
-    @param baudRate New baud rate.
-    */
+     *设置波特率
+     @param baudRate 波特率.
+     */
     public void setBaudRate(String baudRate) {
 	this.baudRate = Integer.parseInt(baudRate);
     }
 
     /**
-    Gets baud rate as an <code>int</code>.
-    @return Current baud rate.
+    * 获取波特率.
+    @return 当前波特率
     */
     public int getBaudRate() {
 	return baudRate;
     }
 
-    /**
-    Gets baud rate as a <code>String</code>.
-    @return Current baud rate.
-    */
-    public String getBaudRateString() {
-	return Integer.toString(baudRate);
-    }
 
     /**
-    Sets flow control for reading.
-    @param flowControlIn New flow control for reading type.
+    *设置流控制方式
+    *@param flowControl 流控制方式.
+    *flowcontrol - Can be a bitmask combination of
+	*FLOWCONTROL_NONE: no flow control
+	*FLOWCONTROL_RTSCTS_IN: RTS/CTS (hardware) flow control for input
+	*FLOWCONTROL_RTSCTS_OUT:	RTS/CTS (hardware) flow control for output
+	*FLOWCONTROL_XONXOFF_IN:	XON/XOFF (software) flow control for input
+	*FLOWCONTROL_XONXOFF_OUT:	XON/XOFF (software) flow control for output
+	*Throws:UnsupportedCommOperationException 
+	*if any of the flow control mode was not supported by the underline OS, or if input
+	*and output flow control are set to different values, i.e. one hardware and one software. 
+	*The flow control mode will revert to the value before the call was made.
     */
-    public void setFlowControlIn(int flowControlIn) {
-	this.flowControlIn = flowControlIn;
+    public void setFlowControl(int flowControl) {
+	this.flowControl = flowControl;
     }
-
+    
     /**
-    Sets flow control for reading.
-    @param flowControlIn New flow control for reading type.
-    */
-    public void setFlowControlIn(String flowControlIn) {
-	this.flowControlIn = stringToFlow(flowControlIn);
+     *设置流控制方式
+     @param flowControl 流控制方式.
+     */
+    public void setFlowControl(String flowControl) {
+	this.flowControl = stringToFlow(flowControl);
     }
 
     /** 
-    Gets flow control for reading as an <code>int</code>.
-    @return Current flow control type.
+    *获取流控制方式
+    @return 当前流控制方式
     */
-    public int getFlowControlIn() {
-	return flowControlIn;
+    public int getFlowControl() {
+	return flowControl;
     }
-
+    
     /** 
-    Gets flow control for reading as a <code>String</code>.
-    @return Current flow control type.
-    */
-    public String getFlowControlInString() {
-	return flowToString(flowControlIn);
-    }
-
-    /**
-    Sets flow control for writing.
-    @param flowControlIn New flow control for writing type.
-    */
-    public void setFlowControlOut(int flowControlOut) {
-	this.flowControlOut = flowControlOut;
-    }
-
-    /**
-    Sets flow control for writing.
-    @param flowControlIn New flow control for writing type.
-    */
-    public void setFlowControlOut(String flowControlOut) {
-	this.flowControlOut = stringToFlow(flowControlOut);
-    }
-
-    /** 
-    Gets flow control for writing as an <code>int</code>.
-    @return Current flow control type.
-    */
-    public int getFlowControlOut() {
-	return flowControlOut;
-    }
-
-    /** 
-    Gets flow control for writing as a <code>String</code>.
-    @return Current flow control type.
-    */
-    public String getFlowControlOutString() {
-	return flowToString(flowControlOut);
-    }
-
-    /** 
-    Sets data bits.
-    @param databits New data bits setting.
+    *设置数据位
+    @param databits 数据位.
     */
     public void setDatabits(int databits) {
 	this.databits = databits;
     }
 
     /** 
-    Sets data bits.
-    @param databits New data bits setting.
+    *设置数据位
+    @param databits 数据位.
     */
     public void setDatabits(String databits) {
 	if (databits.equals("5")) {
@@ -267,44 +228,26 @@ public class SerialParameters {
     }
 
     /**
-    Gets data bits as an <code>int</code>.
-    @return Current data bits setting.
+    *获取数据位
+    @return 当前数据位
     */
     public int getDatabits() {
 	return databits;
     }
 
-    /**
-    Gets data bits as a <code>String</code>.
-    @return Current data bits setting.
-    */
-    public String getDatabitsString() {
-	switch(databits) {
-	    case SerialPort.DATABITS_5:
-		return "5";
-	    case SerialPort.DATABITS_6:
-		return "6";
-	    case SerialPort.DATABITS_7:
-		return "7";
-	    case SerialPort.DATABITS_8:
-		return "8";
-	    default:
-		return "8";
-	}
-    }
 
     /**
-    Sets stop bits.
-    @param stopbits New stop bits setting.
+    *设置停止位
+    @param stopbits 停止位
     */
     public void setStopbits(int stopbits) {
 	this.stopbits = stopbits;
     }
 
     /**
-    Sets stop bits.
-    @param stopbits New stop bits setting.
-    */
+     *设置停止位
+     @param stopbits 停止位
+     */
     public void setStopbits(String stopbits) {
 	if (stopbits.equals("1")) {
 	    this.stopbits = SerialPort.STOPBITS_1;
@@ -318,41 +261,24 @@ public class SerialParameters {
     }
 
     /**
-    Gets stop bits setting as an <code>int</code>.
-    @return Current stop bits setting.
+    *获取停止位
+    @return 当前停止位
     */
     public int getStopbits() {
 	return stopbits;
     }
 
     /**
-    Gets stop bits setting as a <code>String</code>.
-    @return Current stop bits setting.
-    */
-    public String getStopbitsString() {
-	switch(stopbits) {
-	    case SerialPort.STOPBITS_1:
-		return "1";
-	    case SerialPort.STOPBITS_1_5:
-		return "1.5";
-	    case SerialPort.STOPBITS_2:
-		return "2";
-	    default:
-		return "1";
-	}
-    }
-
-    /**
-    Sets parity setting.
-    @param parity New parity setting.
+    *设置校验位.
+    @param parity 校验位
     */
     public void setParity(int parity) {
 	this.parity = parity;
     }
 
     /**
-    Sets parity setting.
-    @param parity New parity setting.
+    *设置校验位.
+    @param parity 校验位
     */
     public void setParity(String parity) {
 	if (parity.equals("None")) {
@@ -367,29 +293,14 @@ public class SerialParameters {
     }
 
     /**
-    Gets parity setting as an <code>int</code>.
-    @return Current parity setting.
+    *获取校验位
+    @return 当前校验位
     */
     public int getParity() {
 	return parity;
     }
 
-    /**
-    Gets parity setting as a <code>String</code>.
-    @return Current parity setting.
-    */
-    public String getParityString() {
-	switch(parity) {
-	    case SerialPort.PARITY_NONE:
-		return "None";
- 	    case SerialPort.PARITY_EVEN:
-		return "Even";
-	    case SerialPort.PARITY_ODD:
-		return "Odd";
-	    default:
-		return "None";
-	}
-    }
+   
 
     /**
     Converts a <code>String</code> describing a flow control type to an
@@ -401,41 +312,14 @@ public class SerialParameters {
 	if (flowControl.equals("None")) {
 	    return SerialPort.FLOWCONTROL_NONE;
 	}
-	if (flowControl.equals("Xon/Xoff Out")) {
-	    return SerialPort.FLOWCONTROL_XONXOFF_OUT;
+	if (flowControl.equals("Xon/Xoff")) {
+	    return SerialPort.FLOWCONTROL_XONXOFF_IN|SerialPort.FLOWCONTROL_XONXOFF_OUT;
+	    
 	}
-	if (flowControl.equals("Xon/Xoff In")) {
-	    return SerialPort.FLOWCONTROL_XONXOFF_IN;
-	}
-	if (flowControl.equals("RTS/CTS In")) {
-	    return SerialPort.FLOWCONTROL_RTSCTS_IN;
-	}
-	if (flowControl.equals("RTS/CTS Out")) {
-	    return SerialPort.FLOWCONTROL_RTSCTS_OUT;
+	if (flowControl.equals("RTS/CTS")) {
+	    return SerialPort.FLOWCONTROL_RTSCTS_IN|SerialPort.FLOWCONTROL_RTSCTS_OUT;
 	}
 	return SerialPort.FLOWCONTROL_NONE;
     }
-
-    /**
-    Converts an <code>int</code> describing a flow control type to a 
-    <code>String</code> describing a flow control type.
-    @param flowControl An <code>int</code> describing a flow control type.
-    @return A <code>String</code> describing a flow control type.
-    */
-    String flowToString(int flowControl) {
-	switch(flowControl) {
-	    case SerialPort.FLOWCONTROL_NONE:
-		return "None";
-	    case SerialPort.FLOWCONTROL_XONXOFF_OUT:
-		return "Xon/Xoff Out";
-	    case SerialPort.FLOWCONTROL_XONXOFF_IN:
-		return "Xon/Xoff In";
-	    case SerialPort.FLOWCONTROL_RTSCTS_IN:
-		return "RTS/CTS In";
-	    case SerialPort.FLOWCONTROL_RTSCTS_OUT:
-		return "RTS/CTS Out";
-	    default:
-		return "None";
-	}
-    }
+ 
 }
