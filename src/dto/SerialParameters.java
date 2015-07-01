@@ -30,12 +30,14 @@ package dto;
  * purposes.
  */
 
+import java.io.Serializable;
+
 import gnu.io.*;
 
 /**
 A class that stores parameters for serial ports. 
 */
-public class SerialParameters {
+public class SerialParameters implements Serializable {
 
     private String portName;
     private int baudRate;
@@ -320,6 +322,10 @@ public class SerialParameters {
 	    return SerialPort.FLOWCONTROL_RTSCTS_IN|SerialPort.FLOWCONTROL_RTSCTS_OUT;
 	}
 	return SerialPort.FLOWCONTROL_NONE;
+    }
+    public void saveCfg()
+    {
+    	
     }
  
 }
